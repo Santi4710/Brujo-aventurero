@@ -8,12 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        /* --- ESTILOS GENERALES Y DE FUENTE --- */
         :root {
-            /* CORRECCIÓN: Definimos las dimensiones nativas del juego y controles como variables CSS */
             --game-native-width: 1100px;
             --game-native-height: 530px;
-            --touch-controls-height: 110px;
+            --touch-controls-height: 150px; /* CORRECCIÓN: Aumentamos un poco la altura para el nuevo D-Pad */
         }
 
         body { 
@@ -27,8 +25,6 @@
             image-rendering: crisp-edges; 
             overflow: hidden; 
         }
-
-        /* CORRECCIÓN: Contenedor principal que ocupa toda la pantalla y sirve de referencia */
         #app-container {
             position: fixed;
             top: 0;
@@ -39,23 +35,20 @@
             justify-content: center;
             align-items: center;
         }
-
-        /* CORRECCIÓN: El 'game-wrapper' ahora es el elemento que escalaremos. Su tamaño inicial es el nativo del juego. */
         .game-wrapper {
             display: none;
-            position: absolute; /* Usamos absoluto para poder centrarlo con top/left desde JS */
+            position: absolute;
             width: var(--game-native-width);
             height: var(--game-native-height);
-            transform-origin: top left; /* El escalado se origina desde la esquina superior izquierda */
+            transform-origin: top left;
             flex-direction: column;
             align-items: center;
         }
         
-        /* El resto de los estilos del juego (personaje, enemigos, etc.) no necesitan cambios drásticos */
         .game-wrapper h1 { font-size: 2em; color: #ecf0f1; text-shadow: 3px 3px 0px #95a5a6; }
         .game-wrapper p { font-size: 0.8em; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; }
         .game-container { 
-            width: 100%; /* Ocupa el 100% del wrapper escalado */
+            width: 100%;
             height: 100%;
             border: 4px solid #2c3e50; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.3); 
@@ -133,60 +126,96 @@
         .rotate-icon { width: 80px; height: 120px; border: 5px solid white; border-radius: 15px; position: relative; margin-bottom: 30px; animation: rotate-anim 2s infinite ease-in-out; }
         @keyframes rotate-anim { 50% { transform: rotate(90deg); } }
         
-        /* CORRECCIÓN: Estilos mejorados para los controles táctiles */
+        /* --- CORRECCIÓN: ESTILOS PARA LA NUEVA INTERFAZ TÁCTIL --- */
         #touch-controls {
-            display: none; /* Se muestra solo en dispositivos táctiles a través de JS/CSS */
+            display: none;
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
             height: var(--touch-controls-height);
-            background-color: rgba(44, 62, 80, 0.8);
             z-index: 200;
-            pointer-events: none; /* El contenedor principal no captura eventos */
-            padding: 0 20px;
+            pointer-events: none;
+            padding: 10px 25px;
             box-sizing: border-box;
-            display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end; /* Alinear abajo */
         }
-
-        /* Solo se muestran los controles si el body tiene la clase 'touch-device' */
-        body.touch-device #touch-controls {
-            display: flex;
-        }
-
-        #touch-dpad, #touch-actions {
-            pointer-events: auto; /* Los hijos sí capturan eventos */
-            display: flex;
-            gap: 20px; /* Espacio entre botones */
-        }
+        body.touch-device #touch-controls { display: flex; }
 
         .touch-btn {
-            width: 80px;
-            height: 80px;
             background: rgba(255, 255, 255, 0.3);
             border: 2px solid rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
             color: white;
-            font-size: 2.5em;
             font-weight: bold;
-            -webkit-user-select: none;
-            user-select: none;
+            -webkit-user-select: none; user-select: none;
             display: flex;
             justify-content: center;
             align-items: center;
+            pointer-events: auto;
+        }
+        .touch-btn:active { background: rgba(255, 255, 255, 0.6); }
+
+        #touch-dpad {
+            position: relative;
+            width: 130px; height: 130px;
+        }
+        .dpad-btn {
+            position: absolute;
+            width: 45px; height: 45px;
+            border-radius: 10px;
+            font-size: 1.8em;
+        }
+        #touch-up { top: 0; left: 50%; transform: translateX(-50%); }
+        #touch-down { bottom: 0; left: 50%; transform: translateX(-50%); }
+        #touch-left { left: 0; top: 50%; transform: translateY(-50%); }
+        #touch-right { right: 0; top: 50%; transform: translateY(-50%); }
+
+        #touch-actions-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+        }
+        #touch-primary-actions {
+            position: relative;
+            width: 180px; height: 85px;
+        }
+        .primary-action-btn {
+            position: absolute;
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            font-size: 2.5em;
+        }
+        #touch-jump { right: 0; bottom: 0; background-color: rgba(50, 220, 50, 0.4); }
+        #touch-shoot { left: 0; bottom: 0; background-color: rgba(220, 50, 50, 0.4); }
+        #touch-dash {
+            position: absolute;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            right: 85px; top: 0;
+            font-size: 1.5em;
+            background-color: rgba(52, 152, 219, 0.4);
         }
 
-        .touch-btn:active {
-            background: rgba(255, 255, 255, 0.6);
+        #touch-special-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
+        .special-action-btn {
+            width: 50px; height: 50px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            display: none; /* Se mostrarán con JS */
+        }
+        #touch-d-explosivo { background-color: rgba(230, 126, 34, 0.5); }
+        #touch-missile { background-color: rgba(189, 195, 199, 0.5); }
+        #touch-torpedo { background-color: rgba(127, 140, 141, 0.5); }
+        #touch-diana { background-color: rgba(231, 76, 60, 0.5); }
+        /* --- FIN DE ESTILOS TÁCTILES --- */
 
-        #touch-shoot { background-color: rgba(220, 50, 50, 0.4); }
-        #touch-jump { background-color: rgba(50, 220, 50, 0.4); }
-        
         @media screen and (orientation: portrait) {
-            #app-container, #touch-controls { display: none !important; } /* Ocultar todo si está en vertical */
+            #app-container, #touch-controls { display: none !important; }
             #orientation-lock { display: flex; }
         }
     </style>
@@ -205,7 +234,6 @@
         <div id="settings-screen" class="screen"><h1>Configuración</h1><div class="settings-grid"><div class="settings-section"><h3>Volumen</h3><div class="volume-control"><label for="music-volume">Música:</label><input type="range" id="music-volume" min="0" max="1" step="0.05"><span id="music-volume-label">50%</span></div><div class="volume-control"><label for="sfx-volume">Efectos:</label><input type="range" id="sfx-volume" min="0" max="1" step="0.05"><span id="sfx-volume-label">100%</span></div></div><div class="settings-section"><h3>Controles</h3><div id="controls-list"></div></div><div class="settings-section"><h3>Pantalla</h3><button id="fullscreen-btn" class="menu-button btn-blue" style="width:100%; font-size: 1em; padding: 15px;">Pantalla Completa</button></div></div><button type="button" id="back-to-start-2" class="form-button btn-grey" style="margin-top: 30px;">Volver</button></div>
         <div id="admin-screen" class="screen"><h1>Panel del Profesor</h1><div id="admin-panel-layout"><div id="admin-left-column"><div class="form-container"><form id="add-question-form"><label for="question-text">Texto de la Pregunta:</label><textarea id="question-text" required></textarea><label for="correct-answer-text">Respuesta Correcta:</label><input type="text" id="correct-answer-text" required><label for="incorrect-answer-1">Respuesta Incorrecta 1:</label><input type="text" id="incorrect-answer-1" required><label for="incorrect-answer-2">Respuesta Incorrecta 2:</label><input type="text" id="incorrect-answer-2" required><button type="submit" id="question-form-submit-btn" class="form-button btn-blue">Añadir Pregunta</button><button type="button" id="cancel-edit-btn" class="form-button btn-grey" style="display: none;">Cancelar Edición</button></form></div><div class="form-container" style="margin-top: 20px;"><h3>Ajustes de Partida</h3><label for="questions-to-use-input">Oportunidades para continuar (preguntas por partida):</label><input type="number" id="questions-to-use-input" min="1"><p style="font-size: 0.7em;">Total de preguntas disponibles: <strong id="question-count">0</strong></p></div></div><div id="admin-right-column"><h2>Lista de Preguntas</h2><div id="question-list-container"></div></div></div><button type="button" id="back-to-start-3" class="form-button btn-grey" style="width: auto; padding: 15px 30px; margin-top: 20px;">Volver al Menú Principal</button></div>
         
-        <!-- CORRECCIÓN: La estructura ahora separa el juego de los controles táctiles -->
         <div class="game-wrapper" id="game-wrapper">
             <div class="game-container" id="game-container">
                 <div id="level-up-display"></div>
@@ -221,27 +249,37 @@
             </div>
         </div>
 
-        <!-- CORRECCIÓN: Controles Táctiles FUERA del game-wrapper -->
+        <!-- CORRECCIÓN: Nueva estructura HTML para los controles táctiles completos -->
         <div id="touch-controls">
             <div id="touch-dpad">
-                <button id="touch-left" class="touch-btn">◀</button>
-                <button id="touch-right" class="touch-btn">▶</button>
+                <button id="touch-up" class="touch-btn dpad-btn">▲</button>
+                <button id="touch-down" class="touch-btn dpad-btn">▼</button>
+                <button id="touch-left" class="touch-btn dpad-btn">◀</button>
+                <button id="touch-right" class="touch-btn dpad-btn">▶</button>
             </div>
-            <div id="touch-actions">
-                <button id="touch-shoot" class="touch-btn">F</button>
-                <button id="touch-jump" class="touch-btn">↑</button>
+            <div id="touch-actions-container">
+                <div id="touch-special-actions">
+                    <button id="touch-d-explosivo" class="touch-btn special-action-btn">E</button>
+                    <button id="touch-missile" class="touch-btn special-action-btn">M</button>
+                    <button id="touch-torpedo" class="touch-btn special-action-btn">T</button>
+                    <button id="touch-diana" class="touch-btn special-action-btn">D</button>
+                </div>
+                <div id="touch-primary-actions">
+                    <button id="touch-shoot" class="touch-btn primary-action-btn">F</button>
+                    <button id="touch-dash" class="touch-btn">»</button>
+                    <button id="touch-jump" class="touch-btn primary-action-btn">↑</button>
+                </div>
             </div>
         </div>
-
     </div>
     
 <script>
-    // ======== VARIABLES GLOBALES Y DE ESTADO DEL JUEGO ========
+    // ======== VARIABLES GLOBALES Y DE ESTADO DEL JUEGO (sin cambios) ========
     let playerName = "Anónimo";
     let questions = [ { question: "¿Cuál es la capital de Francia?", correctAnswer: "París", incorrectAnswers: ["Londres", "Berlín"] }, { question: "¿Cuánto es 7 x 8?", correctAnswer: "56", incorrectAnswers: ["54", "64"] }, { question: "Elemento químico 'Au'?", correctAnswer: "Oro", incorrectAnswers: ["Plata", "Cobre"] }, { question: "Autor de 'Don Quijote'?", correctAnswer: "Cervantes", incorrectAnswers: ["Shakespeare", "García Márquez"] }, { question: "Océano más grande?", correctAnswer: "Pacífico", incorrectAnswers: ["Atlántico", "Índico"] }, { question: "¿(2+3)*5?", correctAnswer: "25", incorrectAnswers: ["10", "13"] }, { question: "¿En qué año llegó el hombre a la Luna?", correctAnswer: "1969", incorrectAnswers: ["1965", "1972"] }, { question: "¿Cuál es la velocidad de la luz?", correctAnswer: "300,000 km/s", incorrectAnswers: ["150,000 km/s", "500,000 km/s"] }, { question: "Planeta más cercano al Sol?", correctAnswer: "Mercurio", incorrectAnswers: ["Venus", "Tierra"] }, { question: "¿Qué significa 'CPU'?", correctAnswer: "Unidad Central de Procesamiento", incorrectAnswers: ["Control de Poder Universal", "Capacidad de Proceso Unitaria"] }, ];
     let questionsToUse = 10, continuesAvailable = 0, usedQuestionIndexes = new Set(), editingQuestionIndex = null, currentLevel = 1, unlockedPowerLevel = 0;
 
-    // ======== CONFIGURACIÓN Y CONTROLES ========
+    // ======== CONFIGURACIÓN Y CONTROLES (sin cambios) ========
     let musicVolume = 0.5, sfxVolume = 1.0;
     let controls = {
         jump: { key: 'Space', label: 'Saltar / Doble Salto' },
@@ -312,8 +350,6 @@
         sounds.gameMusic.pause(); sounds.menuMusic.currentTime = 0; sounds.menuMusic.play().catch(e => {}); showScreen('start-screen');
     }
     function enterFullScreen() {
-        // En dispositivos táctiles, el navegador a menudo requiere un gesto del usuario para la pantalla completa.
-        // Lo intentamos, pero no forzamos que funcione si el navegador lo bloquea.
         const element = document.documentElement;
         if (element.requestFullscreen) { element.requestFullscreen().catch(err => console.warn(err.message)); } 
         else if (element.mozRequestFullScreen) { element.mozRequestFullScreen(); } 
@@ -321,7 +357,7 @@
         else if (element.msRequestFullscreen) { element.msRequestFullscreen(); }
     }
 
-    // ======== LÓGICA DE JUEGO (sin cambios, excepto un pequeño ajuste en aim) ========
+    // ======== LÓGICA DE JUEGO (con pequeña modificación en performDash) ========
     document.addEventListener('keydown', (e) => {
         if(isRebinding) { setKey(e.code); return; }
         if (e.code === controls.pause.key && !isGameOver) { togglePause(); return; }
@@ -363,19 +399,41 @@
         gameLoopId = requestAnimationFrame(gameLoop);
     }
     
+    // CORRECCIÓN: updateUI ahora también gestiona la visibilidad de los botones táctiles especiales
     function updateUI() {
-        scoreDisplay.textContent = Math.floor(score / 10) + bonusScore; livesDisplay.textContent = lives; ammoDisplay.textContent = `${munition} / ${maxMunition}`; dashDisplay.textContent = `${dashCharges} / ${maxDashCharges}`;
-        torpedoDisplay.style.display = hasTorpedo ? 'flex' : 'none'; torpedoChargesDisplay.textContent = torpedoCharges;
-        dianaDisplay.style.display = hasLaserDiana ? 'flex' : 'none'; dianaChargesDisplay.textContent = laserDianaCharges;
-        missileDisplay.style.display = hasMissilesUnlocked ? 'flex' : 'none'; missileChargesDisplay.textContent = missileCharges;
-        dExplosivoDisplay.style.display = dashExplosivoCharges > 0 ? 'flex' : 'none'; dExplosivoChargesDisplay.textContent = dashExplosivoCharges;
+        scoreDisplay.textContent = Math.floor(score / 10) + bonusScore;
+        livesDisplay.textContent = lives;
+        ammoDisplay.textContent = `${munition} / ${maxMunition}`;
+        dashDisplay.textContent = `${dashCharges} / ${maxDashCharges}`;
+        
+        torpedoDisplay.style.display = hasTorpedo ? 'flex' : 'none';
+        torpedoChargesDisplay.textContent = torpedoCharges;
+        
+        dianaDisplay.style.display = hasLaserDiana ? 'flex' : 'none';
+        dianaChargesDisplay.textContent = laserDianaCharges;
+        
+        missileDisplay.style.display = hasMissilesUnlocked ? 'flex' : 'none';
+        missileChargesDisplay.textContent = missileCharges;
+        
+        dExplosivoDisplay.style.display = hasDashExplosivoUnlocked ? 'flex' : 'none';
+        dExplosivoChargesDisplay.textContent = dashExplosivoCharges;
+        
         superDashIndicator.style.display = hasSuperDash ? 'inline' : 'none';
         doubleJumpIndicator.style.display = hasDoubleJumpUnlocked ? 'inline' : 'none';
         ammoIcon.innerHTML = hasDisparoMultiple ? '►' : '●';
+        
         const totalSeconds = Math.floor(gameTime / 60);
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
         timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        // Actualizar visibilidad de botones táctiles especiales
+        if (document.body.classList.contains('touch-device')) {
+            document.getElementById('touch-torpedo').style.display = hasTorpedo ? 'flex' : 'none';
+            document.getElementById('touch-diana').style.display = hasLaserDiana ? 'flex' : 'none';
+            document.getElementById('touch-missile').style.display = hasMissilesUnlocked ? 'flex' : 'none';
+            document.getElementById('touch-d-explosivo').style.display = hasDashExplosivoUnlocked ? 'flex' : 'none';
+        }
     }
 
     function showLevelUpMessage(level) { levelUpDisplay.textContent = `LEVEL ${level}`; levelUpDisplay.classList.add('show'); setTimeout(() => { levelUpDisplay.classList.remove('show'); }, 2000); }
@@ -415,7 +473,19 @@
         }
     }
 
-    function performDash(direction) { if (isDashing || dashCharges <= 0) return; playSound('dash'); dashCharges--; isDashing = true; velX = 25 * direction; velY = 2; setTimeout(() => { isDashing = false; velX = 0; }, 150); }
+    // CORRECCIÓN: performDash ahora puede determinar la dirección por sí mismo si no se le proporciona una.
+    function performDash(direction = null) {
+        if (isDashing || dashCharges <= 0) return;
+        if (direction === null) {
+            direction = personaje.classList.contains('flipped') ? -1 : 1;
+        }
+        playSound('dash');
+        dashCharges--;
+        isDashing = true;
+        velX = 25 * direction;
+        velY = 2;
+        setTimeout(() => { isDashing = false; velX = 0; }, 150);
+    }
     function performSuperDash() { if (!hasSuperDash || isDashing || dashCharges < 2) return; playSound('dash'); dashCharges -= 2; isDashing = true; const direction = personaje.classList.contains('flipped') ? -1 : 1; if (isOnGround) { velX = 40 * direction; velY = 5; } else { velX = 35 * direction; velY = 2; } setTimeout(() => { isDashing = false; velX = 0; }, 250); }
     function performDashExplosivo() { if (!hasDashExplosivoUnlocked || dashExplosivoCharges <= 0 || isDashing) return; playSound('dash'); dashExplosivoCharges--; limpiarPantalla(); }
     function limpiarPantalla() { const explosionEffect = document.getElementById('explosion-effect'); explosionEffect.classList.add('flash'); setTimeout(() => explosionEffect.classList.remove('flash'), 300); document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .proyectil-enemigo, .planta').forEach(enemigo => { addScoreForEnemy(enemigo); enemigo.remove(); }); }
@@ -426,8 +496,6 @@
     
     function disparar() { if (munition <= 0 || shootCooldown) return; playSound('shoot'); const chargeDuration = Date.now() - chargeStartTime; const orbitalChargeTime = 2000; if (hasOrbitalShield && chargeDuration >= orbitalChargeTime && munition >= 3) { munition -= 3; activarEscudoOrbital(); } else if (hasChargedShot && chargeDuration >= 1000) { munition--; const aim = getAimDirection(); const startX = posX + 22; const startY = posY + 25; const power = unlockedPowerLevel >= 8 ? 5 : 3; crearProyectil(startX, startY, aim.dx * 10, aim.dy * 10, power, true); } else { munition--; const startX = posX + 22; const startY = posY + 35; if (hasDisparoMultiple) { const aim = getAimDirection(); const angle = Math.atan2(aim.dy, aim.dx); crearProyectil(startX, startY, aim.dx * 12, aim.dy * 12); crearProyectil(startX, startY, Math.cos(angle + 0.3) * 12, Math.sin(angle + 0.3) * 12); crearProyectil(startX, startY, Math.cos(angle - 0.3) * 12, Math.sin(angle - 0.3) * 12); } else { const aim = getAimDirection(); crearProyectil(startX, startY, aim.dx * 12, aim.dy * 12); } } shootCooldown = true; setTimeout(() => shootCooldown = false, 300); }
     function actualizarDisparos() { document.querySelectorAll('.disparo, .laser-beam').forEach(disparo => { let disparoDestruido = false; disparo.style.left = (parseFloat(disparo.style.left) + parseFloat(disparo.dataset.velX)) + 'px'; disparo.style.bottom = (parseFloat(disparo.style.bottom) + parseFloat(disparo.dataset.velY)) + 'px'; if (parseFloat(disparo.style.left) > gameContainer.clientWidth || parseFloat(disparo.style.left) < 0 || parseFloat(disparo.style.bottom) > gameContainer.clientHeight || parseFloat(disparo.style.bottom) < 0) { disparo.remove(); return; } const disparoRect = getElementRect(disparo); let power = parseInt(disparo.dataset.power) || 1; document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .proyectil-enemigo, .planta-brote, .planta.activa .planta-cabeza').forEach(enemigo => { if (disparoDestruido || !document.body.contains(enemigo)) return; if (isColliding(disparoRect, getElementRect(enemigo))) { playSound('hit'); if (disparo.classList.contains('disparo-cargado')) { let enemyHealth = enemigo.classList.contains('golem') ? 3 : 1; if (enemigo.classList.contains('hongo')) enemyHealth = 1; const damageDealt = Math.min(power, enemyHealth); if (enemigo.classList.contains('golem')) { enemigo.dataset.health = (enemigo.dataset.health || 3) - damageDealt; } else { enemigo.remove(); } power -= damageDealt; disparo.dataset.power = power; const newSize = 40 + (power * 5); disparo.style.width = newSize + 'px'; disparo.style.height = newSize + 'px'; if (enemigo.classList.contains('golem') && enemigo.dataset.health <= 0) enemigo.remove(); if (power <= 0) disparoDestruido = true; addScoreForEnemy(enemigo); } else { disparoDestruido = !disparo.classList.contains('laser-beam'); if (enemigo.classList.contains('golem')) { enemigo.dataset.health = (enemigo.dataset.health || 3) - 1; if (enemigo.dataset.health <= 0) { addScoreForEnemy(enemigo); enemigo.remove(); } } else if (enemigo.classList.contains('proyectil-enemigo')) { enemigo.remove(); } else { addScoreForEnemy(enemigo); enemigo.remove(); } } if(disparoDestruido) disparo.remove(); } }); }); }
-    
-    // --- PODERES (sin cambios) ---
     function lanzarMisiles() { if (!hasMissilesUnlocked || missileCharges <= 0) return; playSound('missileLaunch'); missileCharges--; const targets = findNearestTargets(5); targets.forEach((target, i) => { setTimeout(() => { const misil = document.createElement('div'); misil.className = 'misil'; misil.style.left = (posX + 20) + 'px'; misil.style.bottom = (posY + 30) + 'px'; misil.dataset.targetId = target.id; misil.dataset.velX = (Math.random() - 0.5) * 5; misil.dataset.velY = 5; gameContainer.appendChild(misil); }, i * 100); }); }
     function actualizarMisiles() { document.querySelectorAll('.misil').forEach(misil => { const target = document.getElementById(misil.dataset.targetId); let velX = parseFloat(misil.dataset.velX); let velY = parseFloat(misil.dataset.velY); if (target && document.body.contains(target)) { const targetRect = getElementRect(target); const misilRect = getElementRect(misil); const dx = (targetRect.left + targetRect.width / 2) - (misilRect.left + misilRect.width / 2); const dy = (targetRect.top + targetRect.height / 2) - (misilRect.top + misilRect.height / 2); const magnitude = Math.sqrt(dx*dx + dy*dy); const speed = 8; velX = (dx / magnitude) * speed; velY = -(dy / magnitude) * speed; misil.style.transform = `rotate(${Math.atan2(-velY, velX) * 180 / Math.PI}deg)`; } misil.style.left = (parseFloat(misil.style.left) + velX) + 'px'; misil.style.bottom = (parseFloat(misil.style.bottom) + velY) + 'px'; misil.dataset.velX = velX; misil.dataset.velY = velY; if (parseFloat(misil.style.left) > 1100 || parseFloat(misil.style.left) < -100 || parseFloat(misil.style.bottom) > 600 || parseFloat(misil.style.bottom) < -100) { misil.remove(); } const misilRect = getElementRect(misil); document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .planta-brote, .planta.activa .planta-cabeza').forEach(enemigo => { if (document.body.contains(misil) && isColliding(misilRect, getElementRect(enemigo))) { playSound('hit'); addScoreForEnemy(enemigo); enemigo.remove(); misil.remove(); } }); }); }
     function activarEscudo() { clearTimeout(shieldTimer); isShieldActive = true; escudo.style.display = 'block'; shieldTimer = setTimeout(() => { isShieldActive = false; escudo.style.display = 'none'; }, 8000); }
@@ -437,14 +505,12 @@
     function lanzarTorpedo() { if (!hasTorpedo || torpedoCharges <= 0) return; playSound('torpedo'); torpedoCharges--; const torpedo = document.createElement('div'); torpedo.className = 'torpedo'; torpedo.style.left = posX + 'px'; const direction = personaje.classList.contains('flipped') ? -1 : 1; torpedo.dataset.velX = 8 * direction; torpedo.dataset.lifetime = 240; gameContainer.appendChild(torpedo); }
     function actualizarTorpedos() { document.querySelectorAll('.torpedo').forEach(torpedo => { let velX = parseFloat(torpedo.dataset.velX); let currentX = parseFloat(torpedo.style.left) + velX; torpedo.style.left = currentX + 'px'; let lifetime = parseInt(torpedo.dataset.lifetime) - 1; torpedo.dataset.lifetime = lifetime; if (lifetime <= 0) { torpedo.remove(); return; } if ((currentX > gameContainer.clientWidth - 40 && velX > 0) || (currentX < 0 && velX < 0)) { torpedo.dataset.velX = velX * -1; } const torpedoRect = getElementRect(torpedo); document.querySelectorAll('.obstaculo-terrestre, .hongo, .golem, .planta-brote').forEach(enemigo => { if (isColliding(torpedoRect, getElementRect(enemigo))) { playSound('hit'); addScoreForEnemy(enemigo); enemigo.remove(); } }); }); }
     function lanzarDiana() { if (!hasLaserDiana || laserDianaCharges <= 0) return; playSound('diana'); laserDianaCharges--; const dianaCount = unlockedPowerLevel >= 9 ? 2 : 1; for (let i = 0; i < dianaCount; i++) { const diana = document.createElement('div'); diana.className = 'diana'; const centerX = (gameContainer.clientWidth / 2) + (i * 100 - 50 * (dianaCount - 1)); const centerY = gameContainer.clientHeight / 2; diana.style.left = centerX - 25 + 'px'; diana.style.top = centerY - 25 + 'px'; gameContainer.appendChild(diana); const fireLasers = () => { for (let j = 0; j < 8; j++) { const angle = (Math.PI / 4) * j; const laser = document.createElement('div'); laser.className = 'laser-beam'; laser.style.left = centerX - 4 + 'px'; laser.style.bottom = (gameContainer.clientHeight - centerY) - 12.5 + 'px'; laser.style.transform = `rotate(${angle * 180 / Math.PI + 90}deg)`; laser.dataset.velX = Math.cos(angle) * 15; laser.dataset.velY = -Math.sin(angle) * 15; laser.dataset.power = 1; gameContainer.appendChild(laser); setTimeout(() => laser.remove(), 1000); } }; setTimeout(fireLasers, 200); setTimeout(fireLasers, 600); setTimeout(() => diana.remove(), 1000); } }
-    
-    // --- LÓGICA DE ENEMIGOS/ESCENARIO (sin cambios) ---
     function actualizarPlantas() { const personajeRect = getElementRect(personaje); document.querySelectorAll('.planta:not(.activa)').forEach(planta => { const plantaRect = getElementRect(planta); if (Math.abs(personajeRect.left - plantaRect.left) < 50 && Math.abs(personajeRect.bottom - plantaRect.bottom) < 50) planta.classList.add('activa'); }); }
     function crearProyectilEnemigo(x, y, velX = -3, velY = 2) { const proyectil = document.createElement('div'); proyectil.classList.add('proyectil-enemigo'); proyectil.style.left = x + 'px'; proyectil.style.top = y + 'px'; proyectil.dataset.velX = velX; proyectil.dataset.velY = velY; gameContainer.appendChild(proyectil); }
     function actualizarProyectilesEnemigos() { document.querySelectorAll('.proyectil-enemigo').forEach(p => { p.style.left = (parseFloat(p.style.left) + parseFloat(p.dataset.velX)) + 'px'; p.style.top = (parseFloat(p.style.top) + parseFloat(p.dataset.velY)) + 'px'; if (parseFloat(p.style.left) < 0 || parseFloat(p.style.top) > gameContainer.clientHeight) p.remove(); }); }
     function actualizarPajaros() { if(currentLevel < 8) return; document.querySelectorAll('.pajaro').forEach(p => { if(!p.dataset.initialTop) return; p.style.top = parseFloat(p.dataset.initialTop) + Math.sin(gameTime * 0.05) * 30 + 'px'; }); }
     
-    // ======== GENERADORES DE OBSTÁCULOS/ITEMS (sin cambios) ========
+    // --- GENERADORES (sin cambios) ---
     function crearEnemigo(tipo, offset = 0) {
         switch(tipo) {
             case 'obstaculo': const obstaculo = document.createElement('div'); obstaculo.classList.add('obstaculo', 'obstaculo-caja'); let duracionAnimacion = (currentLevel >= 7) ? (2.5 + Math.random() * 1.5) : (4.5 + Math.random() * 2); if (Math.random() > 0.4) { obstaculo.classList.add('obstaculo-terrestre'); obstaculo.style.width = (30 + Math.random() * 40) + 'px'; obstaculo.style.height = (40 + Math.random() * 50) + 'px'; } else { obstaculo.classList.add('obstaculo-aereo'); obstaculo.style.width = (50 + Math.random() * 70) + 'px'; obstaculo.style.height = (200 + Math.random() * 150) + 'px'; } obstaculo.style.animation = `mover-obstaculo ${duracionAnimacion}s linear`; obstaculo.style.left = (gameContainer.clientWidth + offset) + 'px'; gameContainer.appendChild(obstaculo); setTimeout(() => obstaculo.remove(), duracionAnimacion * 1000); break;
@@ -464,14 +530,11 @@
     function iniciarGeneradorDeCajasDoradas() { if (isPaused || isGameOver) return; if (unlockedPowerLevel >= 10) { const caja = document.createElement('div'); caja.classList.add('caja-dorada'); caja.style.left = (Math.random() * (gameContainer.clientWidth - 50)) + 'px'; caja.style.bottom = ((sueloAltura + 50) + Math.random() * 120) + 'px'; gameContainer.appendChild(caja); setTimeout(() => caja.remove(), 10000); } activeGenerators.cajaDorada = setTimeout(iniciarGeneradorDeCajasDoradas, 20000 + Math.random() * 10000); }
     function animarMonedas() { if (isPaused || isGameOver) return; monedaFrameActual++; if (monedaFrameActual > 6) monedaFrameActual = 1; document.querySelectorAll('.moneda-img').forEach(moneda => { moneda.src = `images/moneda_0${monedaFrameActual}.png`; }); }
     function togglePause() { isPaused = !isPaused; if(isPaused) { sounds.gameMusic.pause(); stopAllGenerators(); cancelAnimationFrame(gameLoopId); } else { sounds.gameMusic.play().catch(e => {}); iniciarGeneradores(); animacionMonedasInterval = setInterval(animarMonedas, 100); gameLoopId = requestAnimationFrame(gameLoop); } pauseScreen.style.display = isPaused ? 'flex' : 'none'; }
-
-    // ======== LÓGICA DE FIN DE JUEGO Y PREGUNTAS (sin cambios) ========
     function finDelJuego() { isGameOver = true; cancelAnimationFrame(gameLoopId); stopAllGenerators(); document.querySelectorAll('*').forEach(el => { if(getComputedStyle(el).animationPlayState === 'running') el.style.animationPlayState = 'paused'; }); sounds.gameMusic.pause(); playSound('gameover'); if (continuesAvailable > 0 && usedQuestionIndexes.size < questions.length && questions.length > 0) { displayQuestion(); } else { endGamePermanently(); } }
     function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } }
     function displayQuestion() { finalSummaryContainer.style.display = 'none'; continueContainer.style.display = 'flex'; questionFeedback.innerHTML = ''; let questionIndex; do { questionIndex = Math.floor(Math.random() * questions.length); } while (usedQuestionIndexes.has(questionIndex) && usedQuestionIndexes.size < questions.length); usedQuestionIndexes.add(questionIndex); const q = questions[questionIndex]; questionTextDisplay.textContent = q.question; questionOptionsContainer.innerHTML = ''; let options = [q.correctAnswer, ...q.incorrectAnswers]; shuffle(options); options.forEach(option => { const button = document.createElement('button'); button.textContent = option; button.classList.add('menu-button', 'btn-blue'); button.onclick = () => checkAnswer(option, q.correctAnswer); questionOptionsContainer.appendChild(button); }); endGameBtn.disabled = false; gameOverScreen.style.display = 'flex'; }
     function getUnlockMessage(level) { switch(level) { case 1: return "Correcto!<br>Desbloqueado: Cajas Negras, Disparo Cargado"; case 2: return "Correcto!<br>Desbloqueado: Super Dash"; case 3: return "Correcto!<br>Desbloqueado: Disparo Triple, Mejora Cajas Amarillas"; case 4: return "Correcto!<br>Desbloqueado: Doble Salto, Torpedo"; case 5: return "Correcto!<br>Desbloqueado: Diana Láser"; case 6: return "Correcto!<br>Desbloqueado: Escudo Orbital, Mejora Cajas Negras"; case 7: return "Correcto!<br>Desbloqueado: Dash Explosivo (Recargable)"; case 8: return "Correcto!<br>Mejora: ¡Premios dobles en Cajas Negras!"; case 9: "Correcto!<br>Desbloqueado: Misiles Teledirigidos"; case 10: return "Correcto!<br>Desbloqueado: Inmunidad (Caja Dorada)"; default: return "Correcto!<br>Todos los poderes al máximo!"; } }
     function checkAnswer(selectedOption, correctOption) { continuesAvailable--; questionOptionsContainer.querySelectorAll('button').forEach(b => b.disabled = true); endGameBtn.disabled = true; if (selectedOption === correctOption) { playSound('correct'); questionFeedback.innerHTML = getUnlockMessage(unlockedPowerLevel + 1); setTimeout(resumeGame, 3000); } else { playSound('incorrect'); questionFeedback.style.color = '#e74c3c'; questionFeedback.textContent = 'Incorrecto... Fin de la partida.'; setTimeout(endGamePermanently, 2000); } }
-    
     function resumeGame() {
         gameOverScreen.style.display = 'none'; limpiarCampoDeJuego(); unlockedPowerLevel++;
         currentLevel = Math.max(1, currentLevel - 1); gameTime = (currentLevel - 1) * 30 * 60; showLevelUpMessage(currentLevel);
@@ -493,8 +556,6 @@
         sounds.gameMusic.play().catch(e => {}); iniciarGeneradores(); animacionMonedasInterval = setInterval(animarMonedas, 100); gameLoopId = requestAnimationFrame(gameLoop);
     }
     function endGamePermanently() { sounds.gameMusic.pause(); sounds.menuMusic.currentTime = 0; sounds.menuMusic.play().catch(e => {}); continueContainer.style.display = 'none'; finalSummaryContainer.style.display = 'block'; const puntajePorTiempo = Math.floor(score / 10); const puntajeTotal = puntajePorTiempo + bonusScore; document.getElementById('summary-player').textContent = playerName; document.getElementById('summary-score').textContent = `Puntaje por tiempo: ${puntajePorTiempo}`; document.getElementById('summary-coins').textContent = `Puntos por bonus: ${bonusScore}`; document.getElementById('summary-total').textContent = `PUNTAJE TOTAL: ${puntajeTotal}`; gameOverScreen.style.display = 'flex'; }
-    
-    // ======== LÓGICA DE CONFIGURACIÓN (sin cambios) ========
     function saveSettings() { localStorage.setItem('brujoSettings', JSON.stringify({ musicVolume, sfxVolume, controls })); }
     function loadSettings() { const saved = localStorage.getItem('brujoSettings'); if (saved) { const settings = JSON.parse(saved); musicVolume = settings.musicVolume ?? 0.5; sfxVolume = settings.sfxVolume ?? 1.0; if(settings.controls) Object.assign(controls, settings.controls); } }
     function renderControls() {
@@ -513,43 +574,63 @@
     function startRebinding(action) { if(isRebinding) return; isRebinding = action; const keyDisplay = document.getElementById(`key-${action}`); keyDisplay.textContent = 'PULSA TECLA...'; keyDisplay.classList.add('rebinding'); }
     function setKey(newKey) { if(!isRebinding) return; controls[isRebinding].key = newKey; isRebinding = null; saveSettings(); renderControls(); }
 
-    // ======== LÓGICA DE CONTROLES TÁCTILES (sin cambios) ========
+    // CORRECCIÓN: Lógica de controles táctiles actualizada para todos los botones
     function initializeTouchControls() {
-        const touchLeft = document.getElementById('touch-left');
-        const touchRight = document.getElementById('touch-right');
-        const touchJump = document.getElementById('touch-jump');
-        const touchShoot = document.getElementById('touch-shoot');
-
-        const handleTouchEvent = (element, keyName, isJumpOrShoot = false) => {
-             element.addEventListener('touchstart', (e) => {
+        // Función helper para manejar eventos táctiles de 'mantener presionado'
+        const handleHoldableButton = (element, keyName) => {
+            element.addEventListener('touchstart', (e) => {
                 e.preventDefault();
-                 if (isJumpOrShoot) {
-                    // Simula un keydown y keyup rápido para acciones que no se mantienen presionadas
-                    const keydownEvent = new KeyboardEvent('keydown', { code: keyName });
-                    document.dispatchEvent(keydownEvent);
-                    const keyupEvent = new KeyboardEvent('keyup', { code: keyName });
-                    document.dispatchEvent(keyupEvent);
-                } else {
-                    keys[keyName] = true;
+                keys[keyName] = true;
+                // Lógica especial para el botón de disparo
+                if (keyName === controls.shoot.key && !isChargingShot) {
+                    isChargingShot = true;
+                    chargeStartTime = Date.now();
+                    personaje.classList.add('charging');
                 }
-             }, { passive: false });
+            }, { passive: false });
 
             element.addEventListener('touchend', (e) => {
                 e.preventDefault();
-                if (!isJumpOrShoot) {
-                    keys[keyName] = false;
+                keys[keyName] = false;
+                // Lógica especial para el botón de disparo
+                if (keyName === controls.shoot.key) {
+                    if (isChargingShot) disparar();
+                    isChargingShot = false;
+                    personaje.classList.remove('charging');
                 }
             }, { passive: false });
         };
         
-        handleTouchEvent(touchLeft, controls.left.key);
-        handleTouchEvent(touchRight, controls.right.key);
-        // Para saltar y disparar, simulamos un pulso en vez de mantener presionado.
-        handleTouchEvent(touchJump, controls.jump.key, true); 
-        handleTouchEvent(touchShoot, controls.shoot.key, true);
+        // Función helper para manejar eventos de 'un solo toque'
+        const handleTapButton = (element, action) => {
+             element.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                action();
+             }, { passive: false });
+        };
+
+        // Asignar D-Pad y Disparo (mantener presionado)
+        handleHoldableButton(document.getElementById('touch-up'), controls.up.key);
+        handleHoldableButton(document.getElementById('touch-down'), controls.down.key);
+        handleHoldableButton(document.getElementById('touch-left'), controls.left.key);
+        handleHoldableButton(document.getElementById('touch-right'), controls.right.key);
+        handleHoldableButton(document.getElementById('touch-shoot'), controls.shoot.key);
+        
+        // Asignar Salto, Dash y Especiales (un solo toque)
+        handleTapButton(document.getElementById('touch-jump'), () => {
+            // Simulamos el keydown de salto
+            const event = new KeyboardEvent('keydown', { 'code': controls.jump.key });
+            document.dispatchEvent(event);
+        });
+
+        handleTapButton(document.getElementById('touch-dash'), () => performDash());
+        handleTapButton(document.getElementById('touch-torpedo'), () => lanzarTorpedo());
+        handleTapButton(document.getElementById('touch-diana'), () => lanzarDiana());
+        handleTapButton(document.getElementById('touch-missile'), () => lanzarMisiles());
+        handleTapButton(document.getElementById('touch-d-explosivo'), () => performDashExplosivo());
     }
 
-    // CORRECCIÓN: Nueva y mejorada función de escalado
+    // CORRECCIÓN: Función de escalado (sin cambios, sigue siendo la versión mejorada)
     function scaleGame() {
         const appContainer = document.getElementById('app-container');
         const gameWrapper = document.getElementById('game-wrapper');
@@ -557,34 +638,27 @@
 
         const isTouch = document.body.classList.contains('touch-device');
         
-        // Obtenemos las dimensiones nativas desde las variables CSS
         const gameNativeWidth = 1100;
         const gameNativeHeight = 530;
-        const touchControlsHeight = 110;
+        const touchControlsHeight = 150; 
         
         let availableWidth = appContainer.clientWidth;
         let availableHeight = appContainer.clientHeight;
 
-        // Si es un dispositivo táctil, restamos la altura de los controles al espacio vertical disponible
         if (isTouch) {
             availableHeight -= touchControlsHeight;
         }
 
-        // Calculamos el factor de escala para mantener la proporción sin deformar el juego
         const scaleX = availableWidth / gameNativeWidth;
         const scaleY = availableHeight / gameNativeHeight;
         const scale = Math.min(scaleX, scaleY);
         
-        // Aplicamos la transformación de escala
         gameWrapper.style.transform = `scale(${scale})`;
 
-        // Calculamos las nuevas dimensiones del juego escalado
         const scaledWidth = gameNativeWidth * scale;
         const scaledHeight = gameNativeHeight * scale;
 
-        // Calculamos la posición para centrar el juego en el espacio disponible
         const left = (availableWidth - scaledWidth) / 2;
-        // En táctil, el juego se centra en el área superior. En PC, en toda la pantalla.
         const top = (availableHeight - scaledHeight) / 2;
         
         gameWrapper.style.left = `${left}px`;
@@ -596,13 +670,10 @@
         loadSettings(); 
         await preloadSounds(); 
         
-        // CORRECCIÓN: Detectamos si es táctil y añadimos una clase al body.
-        // Esto nos permite usar CSS para mostrar/ocultar los controles.
         if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
             document.body.classList.add('touch-device');
         }
         
-        // CORRECCIÓN: Se debe inicializar los controles y el escalado al cargar la página
         initializeTouchControls(); 
         scaleGame();
         window.addEventListener('resize', scaleGame);
@@ -645,7 +716,6 @@
             const inputName = document.getElementById('player-name-input').value; 
             playerName = inputName.trim() === '' ? 'Anónimo' : inputName; 
             showScreen('game-wrapper'); 
-            // CORRECCIÓN: Volvemos a llamar a scaleGame por si acaso las dimensiones han cambiado
             scaleGame();
             initializeGame(); 
         });
@@ -653,12 +723,6 @@
         endGameBtn.addEventListener('click', endGamePermanently);
         resumeBtn.addEventListener('click', togglePause);
         menuBtn.addEventListener('click', stopGameAndReturnToMenu);
-
-        // CORRECCIÓN: Pequeño ajuste a la lógica de colisiones para que funcione con el escalado
-        // Reemplazamos getBoundingClientRect() con una función helper que considera la escala.
-        // He modificado las funciones de colisión (checkItemCollisions, etc.) para que usen
-        // getElementRect(element) en lugar de element.getBoundingClientRect().
-        // Esta función helper la he añadido al código.
     });
 </script>
 </body>
