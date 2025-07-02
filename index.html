@@ -8,12 +8,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #2c3e50; color: white; font-family: 'Press Start 2P', cursive; text-align: center; margin: 0; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; overflow: hidden; }
+        /* [CSS con nuevos estilos para UI compacta y RESPONSIVIDAD MÓVIL] */
+        body { background-color: #2c3e50; color: white; font-family: 'Press Start 2P', cursive; text-align: center; margin: 0; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; overflow: hidden; /* Evita scrollbars */ }
         #app-container { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; }
         .game-wrapper { display: none; flex-direction: column; align-items: center; }
         .game-wrapper h1 { font-size: 2em; color: #ecf0f1; text-shadow: 3px 3px 0px #95a5a6; }
         .game-wrapper p { font-size: 0.8em; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; }
-        .game-container { width: 1100px; height: 530px; border: 4px solid #2c3e50; box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.3); background: linear-gradient(to bottom, #87CEEB 0%, #a2dff3 100%); position: relative; overflow: hidden; }
+        .game-container { width: 1100px; height: 530px; border: 4px solid #2c3e50; box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.3); background: linear-gradient(to bottom, #87CEEB 0%, #a2dff3 100%); position: relative; overflow: hidden; transform-origin: top left; }
         #suelo { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; background: linear-gradient(to bottom, #2E8B57 0%, #228B22 100%); border-top: 4px solid #1E6A4C; z-index: 1; box-shadow: inset 0 6px 0 rgba(255,255,255,0.2); }
         .montana { position: absolute; bottom: 40px; } #montana1 { z-index: -1; width: 0; height: 0; border-left: 250px solid transparent; border-right: 250px solid transparent; border-bottom: 280px solid #636E72; left: 50px; opacity: 0.8; } #montana2 { z-index: -1; width: 0; height: 0; border-left: 200px solid transparent; border-right: 200px solid transparent; border-bottom: 220px solid #7f8c8d; left: 650px; opacity: 0.7; } #montana3 { z-index: -2; width: 0; height: 0; border-left: 180px solid transparent; border-right: 180px solid transparent; border-bottom: 180px solid #b2bec3; left: 350px; opacity: 0.5; } .arbol { position: absolute; bottom: 40px; z-index: 0; } .arbol .tronco { width: 15px; height: 40px; background: linear-gradient(#A0522D, #8B4513); position: absolute; bottom: 0; left: 12.5px; border-radius: 3px 3px 0 0; } .arbol .copa { width: 45px; height: 45px; background-color: #27AE60; border-radius: 50%; position: absolute; bottom: 30px; left: 2.5px; box-shadow: inset -5px -5px 0 #229954; } .arbol .copa::before { content: ''; position: absolute; width: 30px; height: 30px; background-color: #27AE60; border-radius: 50%; top: -15px; left: -10px; box-shadow: inset -5px -5px 0 #229954; } #arbol1 { left: 150px; } #arbol2 { left: 850px; transform: scale(0.8); } .nube { position: absolute; background: white; border-radius: 50%; opacity: 0.9; animation: mover-nube 50s linear infinite; z-index: 0; box-shadow: 0 5px 10px rgba(0,0,0,0.1); } .nube::before, .nube::after { content: ''; position: absolute; background: white; border-radius: 50%; } #nube1 { top: 60px; width: 120px; height: 70px; } #nube1::before { width: 80px; height: 80px; top: -35px; left: 25px; } #nube1::after { width: 90px; height: 90px; top: -15px; left: -35px; } #nube2 { top: 140px; width: 140px; height: 90px; animation-duration: 70s; } #nube2::before { width: 90px; height: 90px; top: -45px; left: 35px; } #nube2::after { width: 70px; height: 70px; top: -25px, right: 25px; } #ui-container { display: flex; justify-content: space-between; align-items: flex-start; position: absolute; top: 15px; left: 15px; right: 15px; z-index: 20; color: #fff; font-size: 16px; }
         .ui-element { background: rgba(0, 0, 0, 0.4); padding: 5px 10px; border-radius: 5px; border: 2px solid rgba(255, 255, 255, 0.5); display: flex; align-items: center; margin-bottom: 8px; box-shadow: 2px 2px 0px rgba(0,0,0,0.2); text-shadow: 2px 2px 0 #000; }
@@ -31,7 +32,6 @@
         .diana { width: 50px; height: 50px; border: 3px solid white; border-radius: 50%; background: conic-gradient(red 0% 25%, white 25% 50%, red 50% 75%, white 75% 100%); position: absolute; z-index: 15; animation: spin-diana 1s linear infinite; } @keyframes spin-diana { to { transform: rotate(360deg); } }
         .laser-beam { position: absolute; width: 8px; height: 25px; background: linear-gradient(to bottom, #e74c3c, #f1c40f); border-radius: 4px; z-index: 14; box-shadow: 0 0 10px #e74c3c; }
 
-        /* Estilos de pantallas de menú */
         .screen { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #2c3e50; z-index: 50; padding: 20px; box-sizing: border-box; }
         .screen h1 { font-size: 3em; color: #ecf0f1; text-shadow: 4px 4px 0px #95a5a6; margin-bottom: 50px; }
         .menu-container, .form-container { display: flex; flex-direction: column; align-items: center; gap: 20px; background: rgba(0,0,0,0.2); padding: 40px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); }
@@ -46,8 +46,6 @@
         #continue-question-container { display: none; flex-direction: column; align-items: center; gap: 15px; background: rgba(0, 0, 0, 0.5); padding: 25px; border-radius: 10px; border: 2px solid #fff; min-width: 600px; }
         #continue-question-container p { font-size: 0.9em; max-width: 90%; }
         #question-feedback { font-size: 1.2em; color: #f1c40f; height: 60px; display: flex; align-items: center; justify-content: center; }
-        .game-wrapper { display: none; flex-direction: column; align-items: center; }
-        
         #admin-panel-layout { display: flex; flex-direction: row; gap: 40px; width: 95%; max-width: 1200px; align-items: flex-start; }
         #admin-left-column { flex: 1; min-width: 450px; }
         #admin-right-column { flex: 1.5; background: rgba(0,0,0,0.15); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); max-height: 60vh; overflow-y: auto; }
@@ -71,7 +69,6 @@
         @keyframes mover-obstaculo { from { left: 1100px; } to { left: -150px; } } 
         @keyframes pulsar-escudo { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } 50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } } @keyframes batir-ala-izq { from { transform: rotate(-30deg); } to { transform: rotate(10deg); } } @keyframes batir-ala-der { from { transform: rotate(30deg); } to { transform: rotate(-10deg); } } @keyframes dash-effect { from { transform: scale(1); opacity: 0.9; } to { transform: scale(2); opacity: 0; } } @keyframes flotar-ojo { 0% { transform: translateY(0); } 50% { transform: translateY(20px); } 100% { transform: translateY(0); } } @keyframes pupila-mira { from { left: 40%; } to { left: 60%; } }
 
-        /* NUEVOS ESTILOS PARA CONFIGURACIÓN Y PAUSA */
         .settings-grid { display: grid; grid-template-columns: 1fr; gap: 25px; width: 100%; max-width: 500px; }
         .settings-section { background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px; }
         .settings-section h3 { margin-top: 0; font-size: 1.2em; color: #f1c40f; }
@@ -83,7 +80,6 @@
         .control-change-btn { font-size: 0.7em; padding: 8px 12px; width: auto; }
         #pause-menu { display: flex; flex-direction: column; gap: 20px; }
 
-        /* ESTILOS PARA BLOQUEO DE ORIENTACIÓN Y CONTROLES TÁCTILES */
         #orientation-lock { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #2c3e50; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
         .rotate-icon { width: 80px; height: 120px; border: 5px solid white; border-radius: 15px; position: relative; margin-bottom: 30px; animation: rotate-anim 2s infinite ease-in-out; }
         @keyframes rotate-anim { 50% { transform: rotate(90deg); } }
@@ -102,10 +98,8 @@
             #app-container { display: none; }
             #orientation-lock { display: flex; }
         }
-        @media (max-width: 800px) {
-            #touch-controls { display: block; }
-            .game-wrapper p { display: none; }
-        }
+        body.touch-device .game-wrapper p { display: none; }
+        body.touch-device #touch-controls { display: block; }
     </style>
 </head>
 <body>
@@ -135,19 +129,18 @@
                 <div id="pause-screen"><div id="pause-menu"><button id="resume-btn" class="menu-button btn-green">Continuar</button><button id="menu-btn" class="menu-button btn-red">Volver al Menú</button></div></div>
                 <div id="game-over"><div id="continue-question-container"><h2 id="question-title">¡Una Oportunidad!</h2><p id="question-text-display"></p><div id="question-options"></div><div id="question-feedback"></div><button id="end-game-btn" class="menu-button btn-red" style="font-size: 0.9em; padding: 15px; width: 300px; margin-top: 20px;">Finalizar Partida</button></div><div id="final-summary-container"><h2>Fin de la Partida</h2><div class="summary"><p>Jugador: <strong id="summary-player"></strong></p><p id="summary-score"></p><p id="summary-coins"></p><hr><p id="summary-total"></p></div><button onclick="location.reload()">Volver al Inicio</button></div></div>
                 <div id="explosion-effect"></div>
-            </div>
-
-            <div id="touch-controls">
-                <div id="touch-dpad">
-                    <button id="touch-left" class="touch-btn">◀</button>
-                    <button id="touch-right" class="touch-btn">▶</button>
+                
+                <div id="touch-controls">
+                    <div id="touch-dpad">
+                        <button id="touch-left" class="touch-btn">◀</button>
+                        <button id="touch-right" class="touch-btn">▶</button>
+                    </div>
+                    <div id="touch-actions">
+                        <button id="touch-shoot" class="touch-btn touch-btn-action">F</button>
+                        <button id="touch-jump" class="touch-btn touch-btn-action">↑</button>
+                    </div>
                 </div>
-                <div id="touch-actions">
-                    <button id="touch-shoot" class="touch-btn touch-btn-action">F</button>
-                    <button id="touch-jump" class="touch-btn touch-btn-action">↑</button>
-                </div>
             </div>
-
         </div>
     </div>
     
@@ -261,7 +254,7 @@
     });
     document.addEventListener('keyup', (e) => { keys[e.code] = false; if (e.code === controls.shoot.key) { if(isChargingShot) disparar(); isChargingShot = false; personaje.classList.remove('charging'); } });
     
-    // CORRECCIÓN FINAL: Se ha añadido gameTime++
+    // CORRECCIÓN FINAL: gameTime++ está en su sitio.
     function gameLoop() {
         if (isGameOver) return;
         if (!isPaused) {
@@ -466,22 +459,82 @@
         handleTouchEvent(touchShoot, controls.shoot.key);
     }
 
+    // ======== FUNCIÓN DE ESCALADO RESPONSIVE ========
+    function scaleGame() {
+        const game = document.querySelector('.game-container');
+        if (!game) return;
+
+        const gameWidth = 1100;
+        const gameHeight = 530;
+
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        const scaleX = viewportWidth / gameWidth;
+        const scaleY = viewportHeight / gameHeight;
+
+        const scale = Math.min(scaleX, scaleY);
+
+        game.style.transform = `scale(${scale})`;
+        game.style.left = `${(viewportWidth - gameWidth * scale) / 2}px`;
+        game.style.top = `${(viewportHeight - gameHeight * scale) / 2}px`;
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
-        loadSettings(); await preloadSounds(); initializeTouchControls(); showScreen('start-screen');
+        loadSettings(); 
+        await preloadSounds(); 
+        
+        if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+            document.body.classList.add('touch-device');
+        }
+        
+        initializeTouchControls(); 
+        scaleGame(); // Escalar al cargar
+        window.addEventListener('resize', scaleGame); // Escalar al cambiar tamaño/orientación
+
+        showScreen('start-screen');
+        
         const musicSlider = document.getElementById('music-volume'); const musicLabel = document.getElementById('music-volume-label');
         const sfxSlider = document.getElementById('sfx-volume'); const sfxLabel = document.getElementById('sfx-volume-label');
         musicSlider.value = musicVolume; musicLabel.textContent = `${Math.round(musicVolume*100)}%`;
         sfxSlider.value = sfxVolume; sfxLabel.textContent = `${Math.round(sfxVolume*100)}%`;
         musicSlider.addEventListener('input', (e) => { musicVolume = parseFloat(e.target.value); musicLabel.textContent = `${Math.round(musicVolume*100)}%`; applyVolumeSettings(); saveSettings(); });
         sfxSlider.addEventListener('input', (e) => { sfxVolume = parseFloat(e.target.value); sfxLabel.textContent = `${Math.round(sfxVolume*100)}%`; playSound('coin'); saveSettings(); });
-        document.getElementById('fullscreen-btn').addEventListener('click', () => { if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => alert(`Error: ${err.message}`)); } else { document.exitFullscreen(); } });
-        document.getElementById('play-btn').addEventListener('click', () => { if (!isAudioInitialized) { if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); audioContext.resume(); sounds.menuMusic.play().catch(e => {}); isAudioInitialized = true; } enterFullScreen(); showScreen('player-name-screen'); });
+        
+        document.getElementById('fullscreen-btn').addEventListener('click', () => { 
+            if (!document.fullscreenElement) { 
+                document.documentElement.requestFullscreen().catch(err => alert(`Error: ${err.message}`)); 
+            } else { 
+                document.exitFullscreen(); 
+            }
+        });
+        
+        document.getElementById('play-btn').addEventListener('click', () => { 
+            if (!isAudioInitialized) { 
+                if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); 
+                audioContext.resume(); 
+                sounds.menuMusic.play().catch(e => {}); 
+                isAudioInitialized = true; 
+            } 
+            enterFullScreen(); 
+            showScreen('player-name-screen'); 
+        });
+        
         document.getElementById('settings-btn').addEventListener('click', () => showScreen('settings-screen'));
         document.getElementById('admin-btn').addEventListener('click', () => showScreen('admin-screen'));
         document.getElementById('back-to-start-1').addEventListener('click', () => showScreen('start-screen'));
         document.getElementById('back-to-start-2').addEventListener('click', () => showScreen('start-screen'));
         document.getElementById('back-to-start-3').addEventListener('click', () => showScreen('start-screen'));
-        document.getElementById('player-name-form').addEventListener('submit', (e) => { e.preventDefault(); const inputName = document.getElementById('player-name-input').value; playerName = inputName.trim() === '' ? 'Anónimo' : inputName; enterFullScreen(); showScreen('game-wrapper'); initializeGame(); });
+        
+        document.getElementById('player-name-form').addEventListener('submit', (e) => { 
+            e.preventDefault(); 
+            const inputName = document.getElementById('player-name-input').value; 
+            playerName = inputName.trim() === '' ? 'Anónimo' : inputName; 
+            enterFullScreen(); 
+            showScreen('game-wrapper'); 
+            initializeGame(); 
+        });
+        
         endGameBtn.addEventListener('click', endGamePermanently);
         resumeBtn.addEventListener('click', togglePause);
         menuBtn.addEventListener('click', stopGameAndReturnToMenu);
