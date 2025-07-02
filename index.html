@@ -11,14 +11,13 @@
         :root {
             --game-native-width: 1100px;
             --game-native-height: 530px;
-            --menu-native-width: 1100px; /* Ancho de referencia para menús */
-            --menu-native-height: 600px; /* Alto de referencia para menús */
+            --menu-native-width: 1100px;
+            --menu-native-height: 600px;
             --touch-controls-height: 140px;
         }
         body { background-color: #2c3e50; color: white; font-family: 'Press Start 2P', cursive; text-align: center; margin: 0; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; overflow: hidden; }
         #app-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
 
-        /* CORRECCIÓN: Los elementos que se escalan (juego y menús) comparten propiedades base */
         .game-wrapper, .screen {
             display: none;
             position: absolute;
@@ -33,11 +32,13 @@
         .screen {
             width: var(--menu-native-width);
             height: var(--menu-native-height);
-            justify-content: center;
+            justify-content: flex-start; /* Alinear contenido arriba */
             background: #2c3e50;
             z-index: 50;
             padding: 20px;
             box-sizing: border-box;
+            /* CORRECCIÓN: Permite el desplazamiento vertical si el contenido es muy alto */
+            overflow-y: auto; 
         }
         
         .game-wrapper h1 { font-size: 2em; color: #ecf0f1; text-shadow: 3px 3px 0px #95a5a6; }
@@ -48,6 +49,18 @@
         .ui-element { background: rgba(0, 0, 0, 0.4); padding: 5px 10px; border-radius: 5px; border: 2px solid rgba(255, 255, 255, 0.5); display: flex; align-items: center; margin-bottom: 8px; box-shadow: 2px 2px 0px rgba(0,0,0,0.2); text-shadow: 2px 2px 0 #000; }
         .ui-icon { margin-right: 10px; font-size: 1.2em; }
         .powerup-indicator { font-size: 0.8em; color: #f1c40f; margin-left: 8px; font-weight: bold; }
+        
+        /* CORRECCIÓN: Botón de pausa para móviles */
+        #pause-btn-touch {
+            display: none; /* Oculto por defecto */
+            cursor: pointer;
+            padding: 8px 12px;
+            font-size: 1.2em;
+        }
+        body.touch-device #pause-btn-touch {
+            display: flex; /* Visible en móviles */
+        }
+        
         #game-over { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); flex-direction: column; justify-content: center; align-items: center; font-size: 1.2em; z-index: 30; color: white; padding: 20px; box-sizing: border-box; } #game-over h2 { font-size: 3em; margin-bottom: 30px; color: #e74c3c; text-shadow: 3px 3px 0px #fff; } .summary { text-align: left; background: rgba(0, 0, 0, 0.5); padding: 25px; border-radius: 10px; border: 2px solid #fff; min-width: 400px; } #game-over button { margin-top: 30px; padding: 15px 30px; font-size: 1em; font-weight: bold; color: white; text-shadow: 2px 2px 0px rgba(0,0,0,0.5); background-color: #27ae60; border: 2px solid #2ecc71; border-radius: 10px; cursor: pointer; box-shadow: 0 6px #16a085; transition: all 0.1s ease-in-out; } #game-over button:hover { background-color: #2ecc71; } #game-over button:active { transform: translateY(4px); box-shadow: 0 2px #16a085; } #personaje { width: 64px; height: 64px; background-image: url('images/brujo_sprite.png'); background-size: 192px 256px; position: absolute; bottom: 40px; will-change: transform, left, bottom; z-index: 10; transition: opacity 0.2s; } #personaje.immune::after { content: ''; position: absolute; top: -10px; left: -10px; width: calc(100% + 20px); height: calc(100% + 20px); border-radius: 50%; background: radial-gradient(circle, rgba(241,196,15,0.7) 20%, rgba(241,196,15,0) 70%); animation: pulse-immune 0.5s infinite; } @keyframes pulse-immune { 50% { transform: scale(1.2); } } .moneda-container { width: 28px; height: 28px; position: absolute; } .moneda-img { width: 100%; height: 100%; } #personaje.idle { animation: flotar-anim 0.6s steps(3) infinite; } #personaje.walking { animation: caminar-anim 0.5s steps(3) infinite; } #personaje.jumping { background-position: -64px -128px; } #personaje.flipped { transform: scaleX(-1); } #personaje.dashing::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%); opacity: 0.9; animation: dash-effect 0.15s ease-out; } #personaje.charging::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; background: #f1c40f; border-radius: 50%; transform: translate(-50%, -50%); animation: charge-pulse 1s infinite; box-shadow: 0 0 15px #f1c40f, 0 0 25px #e67e22; } @keyframes charge-pulse { 50% { transform: translate(-50%, -50%) scale(2.5); opacity: 0.7; } }
         .obstaculo { position: absolute; z-index: 5; } .obstaculo-caja { background-color: #A0522D; border: 3px solid #8B4513; border-radius: 8px; box-shadow: 5px 5px 10px rgba(0,0,0,0.3); }
         .obstaculo-terrestre { bottom: 40px; transform-origin: bottom; } .obstaculo-aereo { top: 0; }
@@ -60,7 +73,7 @@
         .diana { width: 50px; height: 50px; border: 3px solid white; border-radius: 50%; background: conic-gradient(red 0% 25%, white 25% 50%, red 50% 75%, white 75% 100%); position: absolute; z-index: 15; animation: spin-diana 1s linear infinite; } @keyframes spin-diana { to { transform: rotate(360deg); } }
         .laser-beam { position: absolute; width: 8px; height: 25px; background: linear-gradient(to bottom, #e74c3c, #f1c40f); border-radius: 4px; z-index: 14; box-shadow: 0 0 10px #e74c3c; }
 
-        .screen h1 { font-size: 3em; color: #ecf0f1; text-shadow: 4px 4px 0px #95a5a6; margin-bottom: 50px; }
+        .screen h1 { font-size: 3em; color: #ecf0f1; text-shadow: 4px 4px 0px #95a5a6; margin-bottom: 50px; flex-shrink: 0; }
         .menu-container, .form-container { display: flex; flex-direction: column; align-items: center; gap: 20px; background: rgba(0,0,0,0.2); padding: 40px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); }
         .menu-button, .form-button { width: 300px; padding: 20px; font-family: 'Press Start 2P', cursive; font-size: 1.2em; color: white; text-shadow: 2px 2px 0px rgba(0,0,0,0.5); border-radius: 10px; cursor: pointer; transition: all 0.1s ease-in-out; text-align: center; }
         .btn-green { background-color: #27ae60; border: 2px solid #2ecc71; box-shadow: 0 6px #16a085; } .btn-green:hover { background-color: #2ecc71; } .btn-green:active { transform: translateY(4px); box-shadow: 0 2px #16a085; }
@@ -112,84 +125,29 @@
         .rotate-icon { width: 80px; height: 120px; border: 5px solid white; border-radius: 15px; position: relative; margin-bottom: 30px; animation: rotate-anim 2s infinite ease-in-out; }
         @keyframes rotate-anim { 50% { transform: rotate(90deg); } }
         
-        /* --- CORRECCIÓN: ESTILOS PARA LA INTERFAZ TÁCTIL REFINADA --- */
-        #touch-controls {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: var(--touch-controls-height);
-            z-index: 200;
-            pointer-events: none;
-            padding: 10px 20px;
-            box-sizing: border-box;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
+        /* --- CORRECCIÓN: ESTILOS PARA INTERFAZ TÁCTIL CON DIAGONALES --- */
+        #touch-controls { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: var(--touch-controls-height); z-index: 200; pointer-events: none; padding: 10px 20px; box-sizing: border-box; justify-content: space-between; align-items: flex-end; }
         body.touch-device #touch-controls { display: flex; }
-
-        .touch-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            font-weight: bold;
-            -webkit-user-select: none; user-select: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: auto;
-        }
+        .touch-btn { background: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.5); color: white; font-weight: bold; -webkit-user-select: none; user-select: none; display: flex; justify-content: center; align-items: center; pointer-events: auto; }
         .touch-btn:active { background: rgba(255, 255, 255, 0.4); }
 
-        #touch-dpad {
-            position: relative;
-            width: 120px; height: 120px;
-        }
-        .dpad-btn {
-            position: absolute;
-            width: 42px; height: 42px;
-            border-radius: 8px;
-            font-size: 1.6em;
-        }
-        #touch-up { top: 0; left: 50%; transform: translateX(-50%); }
-        #touch-down { bottom: 0; left: 50%; transform: translateX(-50%); }
-        #touch-left { left: 0; top: 50%; transform: translateY(-50%); }
-        #touch-right { right: 0; top: 50%; transform: translateY(-50%); }
-
-        #touch-actions-container {
-            display: flex;
-            align-items: flex-end;
-            gap: 15px;
-        }
-        #touch-primary-actions {
-            display: flex;
-            gap: 15px;
-        }
-        .primary-action-btn {
-            width: 75px; height: 75px;
-            border-radius: 50%;
-            font-size: 2.2em;
-        }
+        #touch-dpad { display: grid; grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 40px); gap: 2px; }
+        .dpad-btn { width: 100%; height: 100%; border-radius: 8px; font-size: 1.5em; }
+        .dpad-corner { background: transparent; border: none; }
+        .dpad-center { pointer-events: none; }
+        
+        #touch-actions-container { display: flex; align-items: flex-end; gap: 15px; }
+        #touch-primary-actions { display: flex; gap: 15px; }
+        .primary-action-btn { width: 70px; height: 70px; border-radius: 50%; font-size: 2em; }
         #touch-jump { background-color: rgba(50, 220, 50, 0.4); }
         #touch-shoot { background-color: rgba(220, 50, 50, 0.4); }
-
-        #touch-special-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .special-action-btn {
-            width: 45px; height: 45px;
-            border-radius: 8px;
-            font-size: 1.1em;
-            display: none; /* Se mostrarán con JS */
-        }
+        
+        #touch-special-actions { display: flex; flex-direction: column; gap: 5px; }
+        .special-action-btn { width: 45px; height: 45px; border-radius: 8px; font-size: 1.1em; display: none; }
         #touch-d-explosivo { background-color: rgba(230, 126, 34, 0.5); }
         #touch-missile { background-color: rgba(189, 195, 199, 0.5); }
         #touch-torpedo { background-color: rgba(127, 140, 141, 0.5); }
         #touch-diana { background-color: rgba(231, 76, 60, 0.5); }
-        /* --- FIN DE ESTILOS TÁCTILES --- */
 
         @media screen and (orientation: portrait) {
             #app-container, #touch-controls { display: none !important; }
@@ -205,7 +163,7 @@
     </div>
 
     <div id="app-container">
-        <!-- Menús y pantallas (sin cambios) -->
+        <!-- Menús y pantallas -->
         <div id="start-screen" class="screen"><h1>Aventura del Brujo</h1><div class="menu-container"><button id="play-btn" class="menu-button btn-green">Jugar</button><button id="settings-btn" class="menu-button btn-blue">Configuración</button><button id="admin-btn" class="menu-button btn-red">Administrador</button></div></div>
         <div id="player-name-screen" class="screen"><h1>Introduce tu Nombre</h1><form id="player-name-form" class="form-container"><label for="player-name-input">Jugador:</label><input type="text" id="player-name-input" maxlength="15" required><button type="submit" class="form-button btn-green">Comenzar Aventura</button><button type="button" id="back-to-start-1" class="form-button btn-grey">Volver</button></form></div>
         <div id="settings-screen" class="screen"><h1>Configuración</h1><div class="settings-grid"><div class="settings-section"><h3>Volumen</h3><div class="volume-control"><label for="music-volume">Música:</label><input type="range" id="music-volume" min="0" max="1" step="0.05"><span id="music-volume-label">50%</span></div><div class="volume-control"><label for="sfx-volume">Efectos:</label><input type="range" id="sfx-volume" min="0" max="1" step="0.05"><span id="sfx-volume-label">100%</span></div></div><div class="settings-section"><h3>Controles</h3><div id="controls-list"></div></div><div class="settings-section"><h3>Pantalla</h3><button id="fullscreen-btn" class="menu-button btn-blue" style="width:100%; font-size: 1em; padding: 15px;">Pantalla Completa</button></div></div><button type="button" id="back-to-start-2" class="form-button btn-grey" style="margin-top: 30px;">Volver</button></div>
@@ -218,7 +176,7 @@
                 <div id="arbol1" class="arbol"><div class="tronco"></div><div class="copa"></div></div><div id="arbol2" class="arbol"><div class="tronco"></div><div class="copa"></div></div>
                 <div id="nube1" class="nube"></div><div id="nube2" class="nube"></div>
                 <div id="suelo"></div>
-                <div id="ui-container"><div class="ui-left"><div class="ui-element" id="lives-container"><span class="ui-icon" style="color: #e74c3c;">♥</span><span id="lives-display"></span><span id="double-jump-indicator" class="powerup-indicator" style="display: none;">↑</span></div><div class="ui-element"><span id="ammo-icon" class="ui-icon">●</span><span id="ammo-display"></span></div><div class="ui-element"><span class="ui-icon">»</span><span id="dash-display"></span><span id="super-dash-indicator" class="powerup-indicator" style="display: none;">(S)</span></div><div id="special-charges-container" style="display: flex; flex-direction: column;"><div id="torpedo-display" class="ui-element" style="display: none;"><span class="ui-icon">T</span><span id="torpedo-charges">0</span></div><div id="diana-display" class="ui-element" style="display: none;"><span class="ui-icon">D</span><span id="diana-charges">0</span></div><div id="missile-display" class="ui-element" style="display: none;"><span class="ui-icon" style="color:#bdc3c7;">M</span><span id="missile-charges">0</span></div><div id="d-explosivo-display" class="ui-element" style="display: none;"><span class="ui-icon" style="color:#e67e22">E</span><span id="d-explosivo-charges">0</span></div></div></div><div class="ui-right"><div class="ui-element"><span class="ui-icon" style="color: #f1c40f;">©</span><span id="score">0</span></div><div class="ui-element"><span class="ui-icon">⏱</span><span id="timer">00:00</span></div></div></div>
+                <div id="ui-container"><div class="ui-left"><div class="ui-element" id="lives-container"><span class="ui-icon" style="color: #e74c3c;">♥</span><span id="lives-display"></span><span id="double-jump-indicator" class="powerup-indicator" style="display: none;">↑</span></div><div class="ui-element"><span id="ammo-icon" class="ui-icon">●</span><span id="ammo-display"></span></div><div class="ui-element"><span class="ui-icon">»</span><span id="dash-display"></span><span id="super-dash-indicator" class="powerup-indicator" style="display: none;">(S)</span></div><div id="special-charges-container" style="display: flex; flex-direction: column;"><div id="torpedo-display" class="ui-element" style="display: none;"><span class="ui-icon">T</span><span id="torpedo-charges">0</span></div><div id="diana-display" class="ui-element" style="display: none;"><span class="ui-icon">D</span><span id="diana-charges">0</span></div><div id="missile-display" class="ui-element" style="display: none;"><span class="ui-icon" style="color:#bdc3c7;">M</span><span id="missile-charges">0</span></div><div id="d-explosivo-display" class="ui-element" style="display: none;"><span class="ui-icon" style="color:#e67e22">E</span><span id="d-explosivo-charges">0</span></div></div></div><div class="ui-right"><div class="ui-element"><span class="ui-icon" style="color: #f1c40f;">©</span><span id="score">0</span></div><div class="ui-element"><span class="ui-icon">⏱</span><span id="timer">00:00</span></div><!-- CORRECCIÓN: Botón de Pausa para Móvil --><div id="pause-btn-touch" class="ui-element">❚❚</div></div></div>
                 <div id="personaje" class="idle"><div id="escudo"></div></div>
                 <div id="pause-screen"><div id="pause-menu"><button id="resume-btn" class="menu-button btn-green">Continuar</button><button id="menu-btn" class="menu-button btn-red">Volver al Menú</button></div></div>
                 <div id="game-over"><div id="continue-question-container"><h2 id="question-title">¡Una Oportunidad!</h2><p id="question-text-display"></p><div id="question-options"></div><div id="question-feedback"></div><button id="end-game-btn" class="menu-button btn-red" style="font-size: 0.9em; padding: 15px; width: 300px; margin-top: 20px;">Finalizar Partida</button></div><div id="final-summary-container"><h2>Fin de la Partida</h2><div class="summary"><p>Jugador: <strong id="summary-player"></strong></p><p id="summary-score"></p><p id="summary-coins"></p><hr><p id="summary-total"></p></div><button onclick="location.reload()">Volver al Inicio</button></div></div>
@@ -226,13 +184,18 @@
             </div>
         </div>
 
-        <!-- CORRECCIÓN: Estructura HTML de controles táctiles refinada -->
+        <!-- CORRECCIÓN: Estructura HTML para D-Pad con diagonales -->
         <div id="touch-controls">
             <div id="touch-dpad">
+                <button id="touch-up-left" class="dpad-btn dpad-corner"></button>
                 <button id="touch-up" class="touch-btn dpad-btn">▲</button>
-                <button id="touch-down" class="touch-btn dpad-btn">▼</button>
+                <button id="touch-up-right" class="dpad-btn dpad-corner"></button>
                 <button id="touch-left" class="touch-btn dpad-btn">◀</button>
+                <div class="dpad-center"></div>
                 <button id="touch-right" class="touch-btn dpad-btn">▶</button>
+                <button id="touch-down-left" class="dpad-btn dpad-corner"></button>
+                <button id="touch-down" class="touch-btn dpad-btn">▼</button>
+                <button id="touch-down-right" class="dpad-btn dpad-corner"></button>
             </div>
             <div id="touch-actions-container">
                 <div id="touch-primary-actions">
@@ -316,7 +279,7 @@
         posX = 50; posY = sueloAltura; velX = 0; velY = 0; isOnGround = true; score = 0; bonusScore = 0; lives = 3; munition = 0; dashCharges = 0; isDashing = false; isInvincible = false, isImmune = false; isPaused = false; isShieldActive = false; shootCooldown = false; gameTime = 0; unlockedPowerLevel = 0; maxMunition = 5; maxDashCharges = 5;
         hasDisparoMultiple = false; hasSuperDash = false; hasDoubleJumpUnlocked = false; canDoubleJump = false; hasDashExplosivoUnlocked = false;
         hasChargedShot = false; hasOrbitalShield = false; hasTorpedo = false; hasLaserDiana = false; hasMissilesUnlocked = false;
-        torpedoCharges = 0; laserDianaCharges = 0; dashExplosivoCharges = 0, missileCharges = 0;
+        torpedoCharges = 0, laserDianaCharges = 0, dashExplosivoCharges = 0, missileCharges = 0;
         isChargingShot = false; chargeStartTime = 0; activeOrbitals = [];
         continuesAvailable = Math.min(questionsToUse, questions.length); usedQuestionIndexes.clear(); currentLevel = 1;
         showLevelUpMessage(1); limpiarCampoDeJuego(); iniciarGeneradores();
@@ -389,7 +352,6 @@
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
         timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        // CORRECCIÓN: Actualizar visibilidad de botones táctiles especiales
         if (document.body.classList.contains('touch-device')) {
             document.getElementById('touch-torpedo').style.display = hasTorpedo ? 'flex' : 'none';
             document.getElementById('touch-diana').style.display = hasLaserDiana ? 'flex' : 'none';
@@ -435,8 +397,25 @@
     function performSuperDash() { if (!hasSuperDash || isDashing || dashCharges < 2) return; playSound('dash'); dashCharges -= 2; isDashing = true; const direction = personaje.classList.contains('flipped') ? -1 : 1; if (isOnGround) { velX = 40 * direction; velY = 5; } else { velX = 35 * direction; velY = 2; } setTimeout(() => { isDashing = false; velX = 0; }, 250); }
     function performDashExplosivo() { if (!hasDashExplosivoUnlocked || dashExplosivoCharges <= 0 || isDashing) return; playSound('dash'); dashExplosivoCharges--; limpiarPantalla(); }
     function limpiarPantalla() { const explosionEffect = document.getElementById('explosion-effect'); explosionEffect.classList.add('flash'); setTimeout(() => explosionEffect.classList.remove('flash'), 300); document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .proyectil-enemigo, .planta').forEach(enemigo => { addScoreForEnemy(enemigo); enemigo.remove(); }); }
-    // CORRECCIÓN: getAimDirection ahora funciona correctamente con el D-Pad táctil
-    function getAimDirection() { let dx = 0, dy = 0; if (keys[controls.right.key]) dx = 1; else if (keys[controls.left.key]) dx = -1; if (keys[controls.up.key]) dy = 1; else if (keys[controls.down.key]) dy = -1; if(dx === 0 && dy === 0) { dx = personaje.classList.contains('flipped') ? -1 : 1; } const magnitude = Math.sqrt(dx*dx + dy*dy); return magnitude > 0 ? { dx: dx / magnitude, dy: dy / magnitude } : { dx, dy: 0 }; }
+    
+    // CORRECCIÓN: getAimDirection ahora funciona perfectamente con diagonales táctiles
+    function getAimDirection() { 
+        let dx = 0, dy = 0; 
+        if (keys[controls.right.key]) dx = 1; 
+        else if (keys[controls.left.key]) dx = -1; 
+        
+        if (keys[controls.up.key]) dy = 1; 
+        else if (keys[controls.down.key]) dy = -1; 
+        
+        // Si no hay ninguna tecla de dirección presionada, apunta hacia adelante.
+        if(dx === 0 && dy === 0) { 
+            dx = personaje.classList.contains('flipped') ? -1 : 1; 
+        } 
+        
+        const magnitude = Math.sqrt(dx*dx + dy*dy); 
+        return magnitude > 0 ? { dx: dx / magnitude, dy: dy / magnitude } : { dx, dy: 0 }; 
+    }
+    
     function crearProyectil(x, y, velX, velY, power = 1, esCargado = false) { const disparo = document.createElement('div'); disparo.classList.add('disparo'); if (esCargado) { disparo.classList.add('disparo-cargado'); } disparo.dataset.power = power; disparo.dataset.velX = velX; disparo.dataset.velY = velY; disparo.style.left = x + 'px'; disparo.style.bottom = y + 'px'; if(esCargado) { const size = 40 + (power * 5); disparo.style.width = size + 'px'; disparo.style.height = size + 'px'; } gameContainer.appendChild(disparo); }
     function findNearestTargets(count, fromX = posX, fromY = posY) { const targets = []; const pRect = getElementRect(personaje); document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .planta.activa .planta-cabeza').forEach(e => { if(!e.id) e.id = `enemy_${Date.now()}_${Math.random()}`; const eRect = getElementRect(e); const dx = (eRect.left + eRect.width / 2) - (pRect.left + pRect.width / 2); const dy = (eRect.top + eRect.height / 2) - (pRect.top + pRect.height / 2); targets.push({ element: e, dist: dx*dx + dy*dy }); }); return targets.sort((a,b) => a.dist - b.dist).slice(0, count).map(t => t.element); }
     function disparar() { if (munition <= 0 || shootCooldown) return; playSound('shoot'); const chargeDuration = Date.now() - chargeStartTime; const orbitalChargeTime = 2000; if (hasOrbitalShield && chargeDuration >= orbitalChargeTime && munition >= 3) { munition -= 3; activarEscudoOrbital(); } else if (hasChargedShot && chargeDuration >= 1000) { munition--; const aim = getAimDirection(); const startX = posX + 22; const startY = posY + 25; const power = unlockedPowerLevel >= 8 ? 5 : 3; crearProyectil(startX, startY, aim.dx * 10, aim.dy * 10, power, true); } else { munition--; const startX = posX + 22; const startY = posY + 35; if (hasDisparoMultiple) { const aim = getAimDirection(); const angle = Math.atan2(aim.dy, aim.dx); crearProyectil(startX, startY, aim.dx * 12, aim.dy * 12); crearProyectil(startX, startY, Math.cos(angle + 0.3) * 12, Math.sin(angle + 0.3) * 12); crearProyectil(startX, startY, Math.cos(angle - 0.3) * 12, Math.sin(angle - 0.3) * 12); } else { const aim = getAimDirection(); crearProyectil(startX, startY, aim.dx * 12, aim.dy * 12); } } shootCooldown = true; setTimeout(() => shootCooldown = false, 300); }
@@ -517,15 +496,15 @@
     function startRebinding(action) { if(isRebinding) return; isRebinding = action; const keyDisplay = document.getElementById(`key-${action}`); keyDisplay.textContent = 'PULSA TECLA...'; keyDisplay.classList.add('rebinding'); }
     function setKey(newKey) { if(!isRebinding) return; controls[isRebinding].key = newKey; isRebinding = null; saveSettings(); renderControls(); }
 
-    // CORRECCIÓN: Lógica de controles táctiles mejorada
+    // CORRECCIÓN: Lógica de controles táctiles con diagonales y doble toque
     function initializeTouchControls() {
         let lastTouchKey = '', lastTouchTime = 0;
 
-        const handleHoldableButton = (element, keyName) => {
+        const handleHoldableButton = (element, keysToPress) => {
             element.addEventListener('touchstart', (e) => {
                 e.preventDefault();
-                keys[keyName] = true;
-                if (keyName === controls.shoot.key && !isChargingShot) {
+                keysToPress.forEach(key => keys[key] = true);
+                if (keysToPress.includes(controls.shoot.key) && !isChargingShot) {
                     isChargingShot = true;
                     chargeStartTime = Date.now();
                     personaje.classList.add('charging');
@@ -534,8 +513,8 @@
 
             element.addEventListener('touchend', (e) => {
                 e.preventDefault();
-                keys[keyName] = false;
-                if (keyName === controls.shoot.key) {
+                keysToPress.forEach(key => keys[key] = false);
+                if (keysToPress.includes(controls.shoot.key)) {
                     if (isChargingShot) disparar();
                     isChargingShot = false;
                     personaje.classList.remove('charging');
@@ -565,19 +544,23 @@
              }, { passive: false });
         };
 
-        // Asignar D-Pad (mantener presionado)
-        handleHoldableButton(document.getElementById('touch-up'), controls.up.key);
-        handleHoldableButton(document.getElementById('touch-down'), controls.down.key);
-        handleHoldableButton(document.getElementById('touch-left'), controls.left.key);
-        handleHoldableButton(document.getElementById('touch-right'), controls.right.key);
+        // Asignar D-Pad con diagonales
+        handleHoldableButton(document.getElementById('touch-up'), [controls.up.key]);
+        handleHoldableButton(document.getElementById('touch-down'), [controls.down.key]);
+        handleHoldableButton(document.getElementById('touch-left'), [controls.left.key]);
+        handleHoldableButton(document.getElementById('touch-right'), [controls.right.key]);
+        handleHoldableButton(document.getElementById('touch-up-left'), [controls.up.key, controls.left.key]);
+        handleHoldableButton(document.getElementById('touch-up-right'), [controls.up.key, controls.right.key]);
+        handleHoldableButton(document.getElementById('touch-down-left'), [controls.down.key, controls.left.key]);
+        handleHoldableButton(document.getElementById('touch-down-right'), [controls.down.key, controls.right.key]);
         
-        // Asignar doble toque para Dash/Super-dash
+        // Asignar doble toque para Dash/Super-dash a los botones cardinales
         handleDirectionalTap(document.getElementById('touch-left'), 'left');
         handleDirectionalTap(document.getElementById('touch-right'), 'right');
         handleDirectionalTap(document.getElementById('touch-down'), 'down');
 
         // Asignar Disparo (mantener presionado)
-        handleHoldableButton(document.getElementById('touch-shoot'), controls.shoot.key);
+        handleHoldableButton(document.getElementById('touch-shoot'), [controls.shoot.key]);
         
         // Asignar Salto y Especiales (un solo toque)
         handleTapButton(document.getElementById('touch-jump'), () => {
@@ -588,6 +571,9 @@
         handleTapButton(document.getElementById('touch-diana'), () => lanzarDiana());
         handleTapButton(document.getElementById('touch-missile'), () => lanzarMisiles());
         handleTapButton(document.getElementById('touch-d-explosivo'), () => performDashExplosivo());
+        
+        // CORRECCIÓN: Asignar botón de pausa
+        handleTapButton(document.getElementById('pause-btn-touch'), () => togglePause());
     }
 
     // CORRECCIÓN: Función de escalado unificada para juego y menús
@@ -599,9 +585,9 @@
         const isTouch = document.body.classList.contains('touch-device');
         const isGame = activeElement.classList.contains('game-wrapper');
         
-        const nativeWidth = isGame ? 1100 : 1100; // Puedes ajustar el ancho nativo de los menús si es diferente
-        const nativeHeight = isGame ? 530 : 600; // Altura nativa de juego vs menús
-        const touchControlsHeight = 140; 
+        const nativeWidth = isGame ? parseInt(getComputedStyle(document.documentElement).getPropertyValue('--game-native-width')) : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--menu-native-width'));
+        const nativeHeight = isGame ? parseInt(getComputedStyle(document.documentElement).getPropertyValue('--game-native-height')) : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--menu-native-height'));
+        const touchControlsHeight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--touch-controls-height'));
         
         let availableWidth = appContainer.clientWidth;
         let availableHeight = appContainer.clientHeight;
@@ -623,7 +609,7 @@
         const top = (availableHeight - scaledHeight) / 2;
         
         activeElement.style.left = `${left}px`;
-        activeElement.style.top = `${top}px`;
+        activeElement.style.top = isGame ? top : (appContainer.clientHeight - scaledHeight) / 2;
     }
 
     // ======== INICIALIZACIÓN DEL JUEGO ========
