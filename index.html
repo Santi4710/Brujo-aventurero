@@ -11,51 +11,38 @@
         :root {
             --game-native-width: 1100px;
             --game-native-height: 530px;
-            --touch-controls-height: 150px; /* CORRECCIÓN: Aumentamos un poco la altura para el nuevo D-Pad */
+            --menu-native-width: 1100px; /* Ancho de referencia para menús */
+            --menu-native-height: 600px; /* Alto de referencia para menús */
+            --touch-controls-height: 140px;
         }
+        body { background-color: #2c3e50; color: white; font-family: 'Press Start 2P', cursive; text-align: center; margin: 0; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; overflow: hidden; }
+        #app-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; }
 
-        body { 
-            background-color: #2c3e50; 
-            color: white; 
-            font-family: 'Press Start 2P', cursive; 
-            text-align: center; 
-            margin: 0; 
-            image-rendering: pixelated; 
-            image-rendering: -moz-crisp-edges; 
-            image-rendering: crisp-edges; 
-            overflow: hidden; 
-        }
-        #app-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .game-wrapper {
+        /* CORRECCIÓN: Los elementos que se escalan (juego y menús) comparten propiedades base */
+        .game-wrapper, .screen {
             display: none;
             position: absolute;
-            width: var(--game-native-width);
-            height: var(--game-native-height);
             transform-origin: top left;
             flex-direction: column;
             align-items: center;
         }
+        .game-wrapper {
+            width: var(--game-native-width);
+            height: var(--game-native-height);
+        }
+        .screen {
+            width: var(--menu-native-width);
+            height: var(--menu-native-height);
+            justify-content: center;
+            background: #2c3e50;
+            z-index: 50;
+            padding: 20px;
+            box-sizing: border-box;
+        }
         
         .game-wrapper h1 { font-size: 2em; color: #ecf0f1; text-shadow: 3px 3px 0px #95a5a6; }
         .game-wrapper p { font-size: 0.8em; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; }
-        .game-container { 
-            width: 100%;
-            height: 100%;
-            border: 4px solid #2c3e50; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.3); 
-            background: linear-gradient(to bottom, #87CEEB 0%, #a2dff3 100%); 
-            position: relative; 
-            overflow: hidden; 
-        }
+        .game-container { width: 100%; height: 100%; border: 4px solid #2c3e50; box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.3); background: linear-gradient(to bottom, #87CEEB 0%, #a2dff3 100%); position: relative; overflow: hidden; }
         #suelo { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; background: linear-gradient(to bottom, #2E8B57 0%, #228B22 100%); border-top: 4px solid #1E6A4C; z-index: 1; box-shadow: inset 0 6px 0 rgba(255,255,255,0.2); }
         .montana { position: absolute; bottom: 40px; } #montana1 { z-index: -1; width: 0; height: 0; border-left: 250px solid transparent; border-right: 250px solid transparent; border-bottom: 280px solid #636E72; left: 50px; opacity: 0.8; } #montana2 { z-index: -1; width: 0; height: 0; border-left: 200px solid transparent; border-right: 200px solid transparent; border-bottom: 220px solid #7f8c8d; left: 650px; opacity: 0.7; } #montana3 { z-index: -2; width: 0; height: 0; border-left: 180px solid transparent; border-right: 180px solid transparent; border-bottom: 180px solid #b2bec3; left: 350px; opacity: 0.5; } .arbol { position: absolute; bottom: 40px; z-index: 0; } .arbol .tronco { width: 15px; height: 40px; background: linear-gradient(#A0522D, #8B4513); position: absolute; bottom: 0; left: 12.5px; border-radius: 3px 3px 0 0; } .arbol .copa { width: 45px; height: 45px; background-color: #27AE60; border-radius: 50%; position: absolute; bottom: 30px; left: 2.5px; box-shadow: inset -5px -5px 0 #229954; } .arbol .copa::before { content: ''; position: absolute; width: 30px; height: 30px; background-color: #27AE60; border-radius: 50%; top: -15px; left: -10px; box-shadow: inset -5px -5px 0 #229954; } #arbol1 { left: 150px; } #arbol2 { left: 850px; transform: scale(0.8); } .nube { position: absolute; background: white; border-radius: 50%; opacity: 0.9; animation: mover-nube 50s linear infinite; z-index: 0; box-shadow: 0 5px 10px rgba(0,0,0,0.1); } .nube::before, .nube::after { content: ''; position: absolute; background: white; border-radius: 50%; } #nube1 { top: 60px; width: 120px; height: 70px; } #nube1::before { width: 80px; height: 80px; top: -35px; left: 25px; } #nube1::after { width: 90px; height: 90px; top: -15px; left: -35px; } #nube2 { top: 140px; width: 140px; height: 90px; animation-duration: 70s; } #nube2::before { width: 90px; height: 90px; top: -45px; left: 35px; } #nube2::after { width: 70px; height: 70px; top: -25px, right: 25px; } #ui-container { display: flex; justify-content: space-between; align-items: flex-start; position: absolute; top: 15px; left: 15px; right: 15px; z-index: 20; color: #fff; font-size: 16px; }
         .ui-element { background: rgba(0, 0, 0, 0.4); padding: 5px 10px; border-radius: 5px; border: 2px solid rgba(255, 255, 255, 0.5); display: flex; align-items: center; margin-bottom: 8px; box-shadow: 2px 2px 0px rgba(0,0,0,0.2); text-shadow: 2px 2px 0 #000; }
@@ -73,7 +60,6 @@
         .diana { width: 50px; height: 50px; border: 3px solid white; border-radius: 50%; background: conic-gradient(red 0% 25%, white 25% 50%, red 50% 75%, white 75% 100%); position: absolute; z-index: 15; animation: spin-diana 1s linear infinite; } @keyframes spin-diana { to { transform: rotate(360deg); } }
         .laser-beam { position: absolute; width: 8px; height: 25px; background: linear-gradient(to bottom, #e74c3c, #f1c40f); border-radius: 4px; z-index: 14; box-shadow: 0 0 10px #e74c3c; }
 
-        .screen { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #2c3e50; z-index: 50; padding: 20px; box-sizing: border-box; }
         .screen h1 { font-size: 3em; color: #ecf0f1; text-shadow: 4px 4px 0px #95a5a6; margin-bottom: 50px; }
         .menu-container, .form-container { display: flex; flex-direction: column; align-items: center; gap: 20px; background: rgba(0,0,0,0.2); padding: 40px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); }
         .menu-button, .form-button { width: 300px; padding: 20px; font-family: 'Press Start 2P', cursive; font-size: 1.2em; color: white; text-shadow: 2px 2px 0px rgba(0,0,0,0.5); border-radius: 10px; cursor: pointer; transition: all 0.1s ease-in-out; text-align: center; }
@@ -126,7 +112,7 @@
         .rotate-icon { width: 80px; height: 120px; border: 5px solid white; border-radius: 15px; position: relative; margin-bottom: 30px; animation: rotate-anim 2s infinite ease-in-out; }
         @keyframes rotate-anim { 50% { transform: rotate(90deg); } }
         
-        /* --- CORRECCIÓN: ESTILOS PARA LA NUEVA INTERFAZ TÁCTIL --- */
+        /* --- CORRECCIÓN: ESTILOS PARA LA INTERFAZ TÁCTIL REFINADA --- */
         #touch-controls {
             display: none;
             position: fixed;
@@ -136,16 +122,16 @@
             height: var(--touch-controls-height);
             z-index: 200;
             pointer-events: none;
-            padding: 10px 25px;
+            padding: 10px 20px;
             box-sizing: border-box;
             justify-content: space-between;
-            align-items: flex-end; /* Alinear abajo */
+            align-items: flex-end;
         }
         body.touch-device #touch-controls { display: flex; }
 
         .touch-btn {
-            background: rgba(255, 255, 255, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
             color: white;
             font-weight: bold;
             -webkit-user-select: none; user-select: none;
@@ -154,17 +140,17 @@
             align-items: center;
             pointer-events: auto;
         }
-        .touch-btn:active { background: rgba(255, 255, 255, 0.6); }
+        .touch-btn:active { background: rgba(255, 255, 255, 0.4); }
 
         #touch-dpad {
             position: relative;
-            width: 130px; height: 130px;
+            width: 120px; height: 120px;
         }
         .dpad-btn {
             position: absolute;
-            width: 45px; height: 45px;
-            border-radius: 10px;
-            font-size: 1.8em;
+            width: 42px; height: 42px;
+            border-radius: 8px;
+            font-size: 1.6em;
         }
         #touch-up { top: 0; left: 50%; transform: translateX(-50%); }
         #touch-down { bottom: 0; left: 50%; transform: translateX(-50%); }
@@ -177,35 +163,26 @@
             gap: 15px;
         }
         #touch-primary-actions {
-            position: relative;
-            width: 180px; height: 85px;
+            display: flex;
+            gap: 15px;
         }
         .primary-action-btn {
-            position: absolute;
-            width: 80px; height: 80px;
+            width: 75px; height: 75px;
             border-radius: 50%;
-            font-size: 2.5em;
+            font-size: 2.2em;
         }
-        #touch-jump { right: 0; bottom: 0; background-color: rgba(50, 220, 50, 0.4); }
-        #touch-shoot { left: 0; bottom: 0; background-color: rgba(220, 50, 50, 0.4); }
-        #touch-dash {
-            position: absolute;
-            width: 60px; height: 60px;
-            border-radius: 50%;
-            right: 85px; top: 0;
-            font-size: 1.5em;
-            background-color: rgba(52, 152, 219, 0.4);
-        }
+        #touch-jump { background-color: rgba(50, 220, 50, 0.4); }
+        #touch-shoot { background-color: rgba(220, 50, 50, 0.4); }
 
         #touch-special-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
+            flex-direction: column;
             gap: 8px;
         }
         .special-action-btn {
-            width: 50px; height: 50px;
+            width: 45px; height: 45px;
             border-radius: 8px;
-            font-size: 1.2em;
+            font-size: 1.1em;
             display: none; /* Se mostrarán con JS */
         }
         #touch-d-explosivo { background-color: rgba(230, 126, 34, 0.5); }
@@ -249,7 +226,7 @@
             </div>
         </div>
 
-        <!-- CORRECCIÓN: Nueva estructura HTML para los controles táctiles completos -->
+        <!-- CORRECCIÓN: Estructura HTML de controles táctiles refinada -->
         <div id="touch-controls">
             <div id="touch-dpad">
                 <button id="touch-up" class="touch-btn dpad-btn">▲</button>
@@ -258,28 +235,27 @@
                 <button id="touch-right" class="touch-btn dpad-btn">▶</button>
             </div>
             <div id="touch-actions-container">
-                <div id="touch-special-actions">
+                <div id="touch-primary-actions">
+                    <button id="touch-shoot" class="touch-btn primary-action-btn">F</button>
+                    <button id="touch-jump" class="touch-btn primary-action-btn">↑</button>
+                </div>
+                 <div id="touch-special-actions">
                     <button id="touch-d-explosivo" class="touch-btn special-action-btn">E</button>
                     <button id="touch-missile" class="touch-btn special-action-btn">M</button>
                     <button id="touch-torpedo" class="touch-btn special-action-btn">T</button>
                     <button id="touch-diana" class="touch-btn special-action-btn">D</button>
-                </div>
-                <div id="touch-primary-actions">
-                    <button id="touch-shoot" class="touch-btn primary-action-btn">F</button>
-                    <button id="touch-dash" class="touch-btn">»</button>
-                    <button id="touch-jump" class="touch-btn primary-action-btn">↑</button>
                 </div>
             </div>
         </div>
     </div>
     
 <script>
-    // ======== VARIABLES GLOBALES Y DE ESTADO DEL JUEGO (sin cambios) ========
+    // ======== VARIABLES GLOBALES Y DE ESTADO DEL JUEGO ========
     let playerName = "Anónimo";
     let questions = [ { question: "¿Cuál es la capital de Francia?", correctAnswer: "París", incorrectAnswers: ["Londres", "Berlín"] }, { question: "¿Cuánto es 7 x 8?", correctAnswer: "56", incorrectAnswers: ["54", "64"] }, { question: "Elemento químico 'Au'?", correctAnswer: "Oro", incorrectAnswers: ["Plata", "Cobre"] }, { question: "Autor de 'Don Quijote'?", correctAnswer: "Cervantes", incorrectAnswers: ["Shakespeare", "García Márquez"] }, { question: "Océano más grande?", correctAnswer: "Pacífico", incorrectAnswers: ["Atlántico", "Índico"] }, { question: "¿(2+3)*5?", correctAnswer: "25", incorrectAnswers: ["10", "13"] }, { question: "¿En qué año llegó el hombre a la Luna?", correctAnswer: "1969", incorrectAnswers: ["1965", "1972"] }, { question: "¿Cuál es la velocidad de la luz?", correctAnswer: "300,000 km/s", incorrectAnswers: ["150,000 km/s", "500,000 km/s"] }, { question: "Planeta más cercano al Sol?", correctAnswer: "Mercurio", incorrectAnswers: ["Venus", "Tierra"] }, { question: "¿Qué significa 'CPU'?", correctAnswer: "Unidad Central de Procesamiento", incorrectAnswers: ["Control de Poder Universal", "Capacidad de Proceso Unitaria"] }, ];
     let questionsToUse = 10, continuesAvailable = 0, usedQuestionIndexes = new Set(), editingQuestionIndex = null, currentLevel = 1, unlockedPowerLevel = 0;
 
-    // ======== CONFIGURACIÓN Y CONTROLES (sin cambios) ========
+    // ======== CONFIGURACIÓN Y CONTROLES ========
     let musicVolume = 0.5, sfxVolume = 1.0;
     let controls = {
         jump: { key: 'Space', label: 'Saltar / Doble Salto' },
@@ -332,7 +308,7 @@
     questionsToUseInput.addEventListener('change', (e) => { let value = parseInt(e.target.value); if (value > questions.length) { value = questions.length; e.target.value = value; } if (value < 1 && questions.length > 0) { value = 1; e.target.value = value; } questionsToUse = value; });
 
     // ======== GESTIÓN DE PANTALLAS Y FLUJO (sin cambios) ========
-    function showScreen(screenId) { allScreens.forEach(screen => { screen.style.display = 'none'; }); const activeScreen = document.getElementById(screenId); activeScreen.style.display = 'flex'; if (screenId === 'admin-screen') renderQuestionList(); if (screenId === 'settings-screen') renderControls(); }
+    function showScreen(screenId) { allScreens.forEach(screen => { screen.style.display = 'none'; }); const activeScreen = document.getElementById(screenId); if(activeScreen) { activeScreen.style.display = 'flex';} if (screenId === 'admin-screen') renderQuestionList(); if (screenId === 'settings-screen') renderControls(); scaleActiveElement(); }
     function limpiarCampoDeJuego() { document.querySelectorAll('.obstaculo, .disparo, .moneda-container, .caja-regalo, .caja-negra, .caja-dorada, .pajaro, .hongo, .golem, .planta, .ojo-flotante, .proyectil-enemigo, .orbe-protector, .torpedo, .diana, .laser-beam, .misil').forEach(el => el.remove()); activeOrbitals = []; }
     function initializeGame() {
         if(isAudioInitialized) { sounds.menuMusic.pause(); sounds.gameMusic.currentTime = 0; sounds.gameMusic.play().catch(e => {}); }
@@ -340,7 +316,8 @@
         posX = 50; posY = sueloAltura; velX = 0; velY = 0; isOnGround = true; score = 0; bonusScore = 0; lives = 3; munition = 0; dashCharges = 0; isDashing = false; isInvincible = false, isImmune = false; isPaused = false; isShieldActive = false; shootCooldown = false; gameTime = 0; unlockedPowerLevel = 0; maxMunition = 5; maxDashCharges = 5;
         hasDisparoMultiple = false; hasSuperDash = false; hasDoubleJumpUnlocked = false; canDoubleJump = false; hasDashExplosivoUnlocked = false;
         hasChargedShot = false; hasOrbitalShield = false; hasTorpedo = false; hasLaserDiana = false; hasMissilesUnlocked = false;
-        torpedoCharges = 0; laserDianaCharges = 0; dashExplosivoCharges = 0; missileCharges = 0; isChargingShot = false; chargeStartTime = 0; activeOrbitals = [];
+        torpedoCharges = 0; laserDianaCharges = 0; dashExplosivoCharges = 0, missileCharges = 0;
+        isChargingShot = false; chargeStartTime = 0; activeOrbitals = [];
         continuesAvailable = Math.min(questionsToUse, questions.length); usedQuestionIndexes.clear(); currentLevel = 1;
         showLevelUpMessage(1); limpiarCampoDeJuego(); iniciarGeneradores();
         gameLoopId = requestAnimationFrame(gameLoop); animacionMonedasInterval = setInterval(animarMonedas, 100);
@@ -357,7 +334,7 @@
         else if (element.msRequestFullscreen) { element.msRequestFullscreen(); }
     }
 
-    // ======== LÓGICA DE JUEGO (con pequeña modificación en performDash) ========
+    // ======== LÓGICA DE JUEGO (sin cambios) ========
     document.addEventListener('keydown', (e) => {
         if(isRebinding) { setKey(e.code); return; }
         if (e.code === controls.pause.key && !isGameOver) { togglePause(); return; }
@@ -399,35 +376,20 @@
         gameLoopId = requestAnimationFrame(gameLoop);
     }
     
-    // CORRECCIÓN: updateUI ahora también gestiona la visibilidad de los botones táctiles especiales
     function updateUI() {
-        scoreDisplay.textContent = Math.floor(score / 10) + bonusScore;
-        livesDisplay.textContent = lives;
-        ammoDisplay.textContent = `${munition} / ${maxMunition}`;
-        dashDisplay.textContent = `${dashCharges} / ${maxDashCharges}`;
-        
-        torpedoDisplay.style.display = hasTorpedo ? 'flex' : 'none';
-        torpedoChargesDisplay.textContent = torpedoCharges;
-        
-        dianaDisplay.style.display = hasLaserDiana ? 'flex' : 'none';
-        dianaChargesDisplay.textContent = laserDianaCharges;
-        
-        missileDisplay.style.display = hasMissilesUnlocked ? 'flex' : 'none';
-        missileChargesDisplay.textContent = missileCharges;
-        
-        dExplosivoDisplay.style.display = hasDashExplosivoUnlocked ? 'flex' : 'none';
-        dExplosivoChargesDisplay.textContent = dashExplosivoCharges;
-        
+        scoreDisplay.textContent = Math.floor(score / 10) + bonusScore; livesDisplay.textContent = lives; ammoDisplay.textContent = `${munition} / ${maxMunition}`; dashDisplay.textContent = `${dashCharges} / ${maxDashCharges}`;
+        torpedoDisplay.style.display = hasTorpedo ? 'flex' : 'none'; torpedoChargesDisplay.textContent = torpedoCharges;
+        dianaDisplay.style.display = hasLaserDiana ? 'flex' : 'none'; dianaChargesDisplay.textContent = laserDianaCharges;
+        missileDisplay.style.display = hasMissilesUnlocked ? 'flex' : 'none'; missileChargesDisplay.textContent = missileCharges;
+        dExplosivoDisplay.style.display = hasDashExplosivoUnlocked ? 'flex' : 'none'; dExplosivoChargesDisplay.textContent = dashExplosivoCharges;
         superDashIndicator.style.display = hasSuperDash ? 'inline' : 'none';
         doubleJumpIndicator.style.display = hasDoubleJumpUnlocked ? 'inline' : 'none';
         ammoIcon.innerHTML = hasDisparoMultiple ? '►' : '●';
-        
         const totalSeconds = Math.floor(gameTime / 60);
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
         timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-        // Actualizar visibilidad de botones táctiles especiales
+        // CORRECCIÓN: Actualizar visibilidad de botones táctiles especiales
         if (document.body.classList.contains('touch-device')) {
             document.getElementById('touch-torpedo').style.display = hasTorpedo ? 'flex' : 'none';
             document.getElementById('touch-diana').style.display = hasLaserDiana ? 'flex' : 'none';
@@ -438,17 +400,14 @@
 
     function showLevelUpMessage(level) { levelUpDisplay.textContent = `LEVEL ${level}`; levelUpDisplay.classList.add('show'); setTimeout(() => { levelUpDisplay.classList.remove('show'); }, 2000); }
     function updateAnimation() { personaje.classList.remove('idle', 'walking', 'jumping', 'flipped', 'dashing'); if (isDashing) { personaje.classList.add('dashing'); } else if (!isOnGround) { personaje.classList.add('jumping'); } else { if (Math.abs(velX) > 0.5) personaje.classList.add('walking'); else personaje.classList.add('idle'); } if (velX < -0.1) personaje.classList.add('flipped'); }
-    
     function getElementRect(el) { const wrapper = document.getElementById('game-wrapper'); const scale = parseFloat(wrapper.style.transform.replace('scale(', '')); const wrapperRect = wrapper.getBoundingClientRect(); const elRect = el.getBoundingClientRect(); return { left: elRect.left, top: elRect.top, right: elRect.right, bottom: elRect.bottom, width: elRect.width, height: elRect.height }; }
     function checkItemCollisions() { const personajeRect = getElementRect(personaje); document.querySelectorAll('.moneda-container').forEach(e => { if (isColliding(personajeRect, getElementRect(e))) { e.remove(); playSound('coin'); bonusScore += 10; } }); document.querySelectorAll('.caja-regalo').forEach(caja => { if (isColliding(personajeRect, getElementRect(caja))) { playSound('coin'); if (caja.classList.contains('caja-verde')) { munition = maxMunition; } else if (caja.classList.contains('caja-naranja')) { dashCharges = maxDashCharges; } else if (caja.classList.contains('caja-roja')) { activarEscudo(); bonusScore += 500; } else if (caja.classList.contains('caja-amarilla')) { if(unlockedPowerLevel >= 3) { munition = Math.min(munition + 5, maxMunition); dashCharges = Math.min(dashCharges + 5, maxDashCharges); } else { bonusScore += 250; } } else if (caja.classList.contains('caja-violeta')) { lives++; } caja.remove(); } }); if (unlockedPowerLevel >= 1) { document.querySelectorAll('.caja-negra').forEach(caja => { if (isColliding(personajeRect, getElementRect(caja))) { playSound('correct'); caja.remove(); otorgarMejoraAleatoria(); } }); } if (unlockedPowerLevel >= 10) { document.querySelectorAll('.caja-dorada').forEach(caja => { if (isColliding(personajeRect, getElementRect(caja))) { playSound('correct'); caja.remove(); activarInmunidad(); } }); } }
-    
     function checkPlayerDamage() { if (isImmune || isInvincible || isDashing) return; const personajeRect = getElementRect(personaje); document.querySelectorAll('.hongo').forEach(hongo => { const hongoRect = getElementRect(hongo); if (isColliding(personajeRect, hongoRect)) { if (velY < 0 && personajeRect.bottom < hongoRect.top + hongoRect.height * 0.7) { playSound('hit'); hongo.remove(); bonusScore += 100; velY = 8; } else { if (!isShieldActive) takeDamage(); } } }); if (isShieldActive) return; document.querySelectorAll('.obstaculo, .pajaro, .golem, .planta.activa .planta-cabeza, .proyectil-enemigo, .ojo-flotante').forEach(e => { if (isColliding(personajeRect, getElementRect(e))) takeDamage(); }); }
     function checkImmunityCollision() { const personajeRect = getElementRect(personaje); document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .proyectil-enemigo, .planta').forEach(enemigo => { if (isColliding(personajeRect, getElementRect(enemigo))) { playSound('hit'); addScoreForEnemy(enemigo); enemigo.remove(); } }); }
     function checkDashCollisions() { if (!isDashing) return; const dashRect = getElementRect(personaje); document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .planta').forEach(enemigo => { if (isColliding(dashRect, getElementRect(enemigo))) { playSound('hit'); addScoreForEnemy(enemigo); enemigo.remove(); } }); }
     function takeDamage() { if (isInvincible || isImmune) return; playSound('hurt'); lives--; isInvincible = true; personaje.style.opacity = 0.5; if (lives <= 0) { finDelJuego(); } else { setTimeout(() => { isInvincible = false; personaje.style.opacity = 1; }, 1500); } }
     function isColliding(rect1, rect2) { return rect1.right > rect2.left && rect1.left < rect2.right && rect1.bottom > rect2.top && rect1.top < rect2.bottom; }
     function addScoreForEnemy(enemigo) { if (enemigo.classList.contains('obstaculo-terrestre')) bonusScore += 50; else if (enemigo.classList.contains('obstaculo-aereo')) bonusScore += 75; else if (enemigo.classList.contains('pajaro')) bonusScore += 350; else if (enemigo.classList.contains('hongo')) bonusScore += 100; else if (enemigo.classList.contains('golem')) bonusScore += 300; else if (enemigo.classList.contains('ojo-flotante')) bonusScore += 500; else if (enemigo.classList.contains('planta') || enemigo.closest('.planta')) bonusScore += 400; }
-
     function otorgarMejoraAleatoria() { 
         bonusScore += 250; 
         let lootPool = [];
@@ -472,28 +431,14 @@
             } 
         }
     }
-
-    // CORRECCIÓN: performDash ahora puede determinar la dirección por sí mismo si no se le proporciona una.
-    function performDash(direction = null) {
-        if (isDashing || dashCharges <= 0) return;
-        if (direction === null) {
-            direction = personaje.classList.contains('flipped') ? -1 : 1;
-        }
-        playSound('dash');
-        dashCharges--;
-        isDashing = true;
-        velX = 25 * direction;
-        velY = 2;
-        setTimeout(() => { isDashing = false; velX = 0; }, 150);
-    }
+    function performDash(direction) { if (isDashing || dashCharges <= 0) return; playSound('dash'); dashCharges--; isDashing = true; velX = 25 * direction; velY = 2; setTimeout(() => { isDashing = false; velX = 0; }, 150); }
     function performSuperDash() { if (!hasSuperDash || isDashing || dashCharges < 2) return; playSound('dash'); dashCharges -= 2; isDashing = true; const direction = personaje.classList.contains('flipped') ? -1 : 1; if (isOnGround) { velX = 40 * direction; velY = 5; } else { velX = 35 * direction; velY = 2; } setTimeout(() => { isDashing = false; velX = 0; }, 250); }
     function performDashExplosivo() { if (!hasDashExplosivoUnlocked || dashExplosivoCharges <= 0 || isDashing) return; playSound('dash'); dashExplosivoCharges--; limpiarPantalla(); }
     function limpiarPantalla() { const explosionEffect = document.getElementById('explosion-effect'); explosionEffect.classList.add('flash'); setTimeout(() => explosionEffect.classList.remove('flash'), 300); document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .proyectil-enemigo, .planta').forEach(enemigo => { addScoreForEnemy(enemigo); enemigo.remove(); }); }
-    
-    function getAimDirection() { let dx = personaje.classList.contains('flipped') ? -1 : 1; let dy = 0; if (keys[controls.up.key]) dy = 1; if (keys[controls.down.key]) dy = -1; if ((keys[controls.up.key] || keys[controls.down.key]) && !(keys[controls.left.key] || keys[controls.right.key])) dx = 0; const magnitude = Math.sqrt(dx*dx + dy*dy); return magnitude > 0 ? { dx: dx / magnitude, dy: dy / magnitude } : { dx, dy }; }
+    // CORRECCIÓN: getAimDirection ahora funciona correctamente con el D-Pad táctil
+    function getAimDirection() { let dx = 0, dy = 0; if (keys[controls.right.key]) dx = 1; else if (keys[controls.left.key]) dx = -1; if (keys[controls.up.key]) dy = 1; else if (keys[controls.down.key]) dy = -1; if(dx === 0 && dy === 0) { dx = personaje.classList.contains('flipped') ? -1 : 1; } const magnitude = Math.sqrt(dx*dx + dy*dy); return magnitude > 0 ? { dx: dx / magnitude, dy: dy / magnitude } : { dx, dy: 0 }; }
     function crearProyectil(x, y, velX, velY, power = 1, esCargado = false) { const disparo = document.createElement('div'); disparo.classList.add('disparo'); if (esCargado) { disparo.classList.add('disparo-cargado'); } disparo.dataset.power = power; disparo.dataset.velX = velX; disparo.dataset.velY = velY; disparo.style.left = x + 'px'; disparo.style.bottom = y + 'px'; if(esCargado) { const size = 40 + (power * 5); disparo.style.width = size + 'px'; disparo.style.height = size + 'px'; } gameContainer.appendChild(disparo); }
     function findNearestTargets(count, fromX = posX, fromY = posY) { const targets = []; const pRect = getElementRect(personaje); document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .planta.activa .planta-cabeza').forEach(e => { if(!e.id) e.id = `enemy_${Date.now()}_${Math.random()}`; const eRect = getElementRect(e); const dx = (eRect.left + eRect.width / 2) - (pRect.left + pRect.width / 2); const dy = (eRect.top + eRect.height / 2) - (pRect.top + pRect.height / 2); targets.push({ element: e, dist: dx*dx + dy*dy }); }); return targets.sort((a,b) => a.dist - b.dist).slice(0, count).map(t => t.element); }
-    
     function disparar() { if (munition <= 0 || shootCooldown) return; playSound('shoot'); const chargeDuration = Date.now() - chargeStartTime; const orbitalChargeTime = 2000; if (hasOrbitalShield && chargeDuration >= orbitalChargeTime && munition >= 3) { munition -= 3; activarEscudoOrbital(); } else if (hasChargedShot && chargeDuration >= 1000) { munition--; const aim = getAimDirection(); const startX = posX + 22; const startY = posY + 25; const power = unlockedPowerLevel >= 8 ? 5 : 3; crearProyectil(startX, startY, aim.dx * 10, aim.dy * 10, power, true); } else { munition--; const startX = posX + 22; const startY = posY + 35; if (hasDisparoMultiple) { const aim = getAimDirection(); const angle = Math.atan2(aim.dy, aim.dx); crearProyectil(startX, startY, aim.dx * 12, aim.dy * 12); crearProyectil(startX, startY, Math.cos(angle + 0.3) * 12, Math.sin(angle + 0.3) * 12); crearProyectil(startX, startY, Math.cos(angle - 0.3) * 12, Math.sin(angle - 0.3) * 12); } else { const aim = getAimDirection(); crearProyectil(startX, startY, aim.dx * 12, aim.dy * 12); } } shootCooldown = true; setTimeout(() => shootCooldown = false, 300); }
     function actualizarDisparos() { document.querySelectorAll('.disparo, .laser-beam').forEach(disparo => { let disparoDestruido = false; disparo.style.left = (parseFloat(disparo.style.left) + parseFloat(disparo.dataset.velX)) + 'px'; disparo.style.bottom = (parseFloat(disparo.style.bottom) + parseFloat(disparo.dataset.velY)) + 'px'; if (parseFloat(disparo.style.left) > gameContainer.clientWidth || parseFloat(disparo.style.left) < 0 || parseFloat(disparo.style.bottom) > gameContainer.clientHeight || parseFloat(disparo.style.bottom) < 0) { disparo.remove(); return; } const disparoRect = getElementRect(disparo); let power = parseInt(disparo.dataset.power) || 1; document.querySelectorAll('.obstaculo, .pajaro, .hongo, .golem, .ojo-flotante, .proyectil-enemigo, .planta-brote, .planta.activa .planta-cabeza').forEach(enemigo => { if (disparoDestruido || !document.body.contains(enemigo)) return; if (isColliding(disparoRect, getElementRect(enemigo))) { playSound('hit'); if (disparo.classList.contains('disparo-cargado')) { let enemyHealth = enemigo.classList.contains('golem') ? 3 : 1; if (enemigo.classList.contains('hongo')) enemyHealth = 1; const damageDealt = Math.min(power, enemyHealth); if (enemigo.classList.contains('golem')) { enemigo.dataset.health = (enemigo.dataset.health || 3) - damageDealt; } else { enemigo.remove(); } power -= damageDealt; disparo.dataset.power = power; const newSize = 40 + (power * 5); disparo.style.width = newSize + 'px'; disparo.style.height = newSize + 'px'; if (enemigo.classList.contains('golem') && enemigo.dataset.health <= 0) enemigo.remove(); if (power <= 0) disparoDestruido = true; addScoreForEnemy(enemigo); } else { disparoDestruido = !disparo.classList.contains('laser-beam'); if (enemigo.classList.contains('golem')) { enemigo.dataset.health = (enemigo.dataset.health || 3) - 1; if (enemigo.dataset.health <= 0) { addScoreForEnemy(enemigo); enemigo.remove(); } } else if (enemigo.classList.contains('proyectil-enemigo')) { enemigo.remove(); } else { addScoreForEnemy(enemigo); enemigo.remove(); } } if(disparoDestruido) disparo.remove(); } }); }); }
     function lanzarMisiles() { if (!hasMissilesUnlocked || missileCharges <= 0) return; playSound('missileLaunch'); missileCharges--; const targets = findNearestTargets(5); targets.forEach((target, i) => { setTimeout(() => { const misil = document.createElement('div'); misil.className = 'misil'; misil.style.left = (posX + 20) + 'px'; misil.style.bottom = (posY + 30) + 'px'; misil.dataset.targetId = target.id; misil.dataset.velX = (Math.random() - 0.5) * 5; misil.dataset.velY = 5; gameContainer.appendChild(misil); }, i * 100); }); }
@@ -509,8 +454,6 @@
     function crearProyectilEnemigo(x, y, velX = -3, velY = 2) { const proyectil = document.createElement('div'); proyectil.classList.add('proyectil-enemigo'); proyectil.style.left = x + 'px'; proyectil.style.top = y + 'px'; proyectil.dataset.velX = velX; proyectil.dataset.velY = velY; gameContainer.appendChild(proyectil); }
     function actualizarProyectilesEnemigos() { document.querySelectorAll('.proyectil-enemigo').forEach(p => { p.style.left = (parseFloat(p.style.left) + parseFloat(p.dataset.velX)) + 'px'; p.style.top = (parseFloat(p.style.top) + parseFloat(p.dataset.velY)) + 'px'; if (parseFloat(p.style.left) < 0 || parseFloat(p.style.top) > gameContainer.clientHeight) p.remove(); }); }
     function actualizarPajaros() { if(currentLevel < 8) return; document.querySelectorAll('.pajaro').forEach(p => { if(!p.dataset.initialTop) return; p.style.top = parseFloat(p.dataset.initialTop) + Math.sin(gameTime * 0.05) * 30 + 'px'; }); }
-    
-    // --- GENERADORES (sin cambios) ---
     function crearEnemigo(tipo, offset = 0) {
         switch(tipo) {
             case 'obstaculo': const obstaculo = document.createElement('div'); obstaculo.classList.add('obstaculo', 'obstaculo-caja'); let duracionAnimacion = (currentLevel >= 7) ? (2.5 + Math.random() * 1.5) : (4.5 + Math.random() * 2); if (Math.random() > 0.4) { obstaculo.classList.add('obstaculo-terrestre'); obstaculo.style.width = (30 + Math.random() * 40) + 'px'; obstaculo.style.height = (40 + Math.random() * 50) + 'px'; } else { obstaculo.classList.add('obstaculo-aereo'); obstaculo.style.width = (50 + Math.random() * 70) + 'px'; obstaculo.style.height = (200 + Math.random() * 150) + 'px'; } obstaculo.style.animation = `mover-obstaculo ${duracionAnimacion}s linear`; obstaculo.style.left = (gameContainer.clientWidth + offset) + 'px'; gameContainer.appendChild(obstaculo); setTimeout(() => obstaculo.remove(), duracionAnimacion * 1000); break;
@@ -574,14 +517,14 @@
     function startRebinding(action) { if(isRebinding) return; isRebinding = action; const keyDisplay = document.getElementById(`key-${action}`); keyDisplay.textContent = 'PULSA TECLA...'; keyDisplay.classList.add('rebinding'); }
     function setKey(newKey) { if(!isRebinding) return; controls[isRebinding].key = newKey; isRebinding = null; saveSettings(); renderControls(); }
 
-    // CORRECCIÓN: Lógica de controles táctiles actualizada para todos los botones
+    // CORRECCIÓN: Lógica de controles táctiles mejorada
     function initializeTouchControls() {
-        // Función helper para manejar eventos táctiles de 'mantener presionado'
+        let lastTouchKey = '', lastTouchTime = 0;
+
         const handleHoldableButton = (element, keyName) => {
             element.addEventListener('touchstart', (e) => {
                 e.preventDefault();
                 keys[keyName] = true;
-                // Lógica especial para el botón de disparo
                 if (keyName === controls.shoot.key && !isChargingShot) {
                     isChargingShot = true;
                     chargeStartTime = Date.now();
@@ -592,7 +535,6 @@
             element.addEventListener('touchend', (e) => {
                 e.preventDefault();
                 keys[keyName] = false;
-                // Lógica especial para el botón de disparo
                 if (keyName === controls.shoot.key) {
                     if (isChargingShot) disparar();
                     isChargingShot = false;
@@ -601,7 +543,21 @@
             }, { passive: false });
         };
         
-        // Función helper para manejar eventos de 'un solo toque'
+        const handleDirectionalTap = (element, direction) => {
+            element.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (lastTouchKey === direction && Date.now() - lastTouchTime < 250) {
+                    if (direction === 'left') performDash(-1);
+                    else if (direction === 'right') performDash(1);
+                    else if (direction === 'down') performSuperDash();
+                    lastTouchKey = '';
+                } else {
+                    lastTouchKey = direction;
+                    lastTouchTime = Date.now();
+                }
+            }, { passive: false });
+        };
+
         const handleTapButton = (element, action) => {
              element.addEventListener('touchstart', (e) => {
                 e.preventDefault();
@@ -609,60 +565,65 @@
              }, { passive: false });
         };
 
-        // Asignar D-Pad y Disparo (mantener presionado)
+        // Asignar D-Pad (mantener presionado)
         handleHoldableButton(document.getElementById('touch-up'), controls.up.key);
         handleHoldableButton(document.getElementById('touch-down'), controls.down.key);
         handleHoldableButton(document.getElementById('touch-left'), controls.left.key);
         handleHoldableButton(document.getElementById('touch-right'), controls.right.key);
+        
+        // Asignar doble toque para Dash/Super-dash
+        handleDirectionalTap(document.getElementById('touch-left'), 'left');
+        handleDirectionalTap(document.getElementById('touch-right'), 'right');
+        handleDirectionalTap(document.getElementById('touch-down'), 'down');
+
+        // Asignar Disparo (mantener presionado)
         handleHoldableButton(document.getElementById('touch-shoot'), controls.shoot.key);
         
-        // Asignar Salto, Dash y Especiales (un solo toque)
+        // Asignar Salto y Especiales (un solo toque)
         handleTapButton(document.getElementById('touch-jump'), () => {
-            // Simulamos el keydown de salto
             const event = new KeyboardEvent('keydown', { 'code': controls.jump.key });
             document.dispatchEvent(event);
         });
-
-        handleTapButton(document.getElementById('touch-dash'), () => performDash());
         handleTapButton(document.getElementById('touch-torpedo'), () => lanzarTorpedo());
         handleTapButton(document.getElementById('touch-diana'), () => lanzarDiana());
         handleTapButton(document.getElementById('touch-missile'), () => lanzarMisiles());
         handleTapButton(document.getElementById('touch-d-explosivo'), () => performDashExplosivo());
     }
 
-    // CORRECCIÓN: Función de escalado (sin cambios, sigue siendo la versión mejorada)
-    function scaleGame() {
+    // CORRECCIÓN: Función de escalado unificada para juego y menús
+    function scaleActiveElement() {
         const appContainer = document.getElementById('app-container');
-        const gameWrapper = document.getElementById('game-wrapper');
-        if (!appContainer || !gameWrapper) return;
+        const activeElement = document.querySelector('.game-wrapper[style*="display: flex"], .screen[style*="display: flex"]');
+        if (!appContainer || !activeElement) return;
 
         const isTouch = document.body.classList.contains('touch-device');
+        const isGame = activeElement.classList.contains('game-wrapper');
         
-        const gameNativeWidth = 1100;
-        const gameNativeHeight = 530;
-        const touchControlsHeight = 150; 
+        const nativeWidth = isGame ? 1100 : 1100; // Puedes ajustar el ancho nativo de los menús si es diferente
+        const nativeHeight = isGame ? 530 : 600; // Altura nativa de juego vs menús
+        const touchControlsHeight = 140; 
         
         let availableWidth = appContainer.clientWidth;
         let availableHeight = appContainer.clientHeight;
 
-        if (isTouch) {
+        if (isTouch && isGame) {
             availableHeight -= touchControlsHeight;
         }
 
-        const scaleX = availableWidth / gameNativeWidth;
-        const scaleY = availableHeight / gameNativeHeight;
+        const scaleX = availableWidth / nativeWidth;
+        const scaleY = availableHeight / nativeHeight;
         const scale = Math.min(scaleX, scaleY);
         
-        gameWrapper.style.transform = `scale(${scale})`;
+        activeElement.style.transform = `scale(${scale})`;
 
-        const scaledWidth = gameNativeWidth * scale;
-        const scaledHeight = gameNativeHeight * scale;
+        const scaledWidth = nativeWidth * scale;
+        const scaledHeight = nativeHeight * scale;
 
-        const left = (availableWidth - scaledWidth) / 2;
+        const left = (appContainer.clientWidth - scaledWidth) / 2;
         const top = (availableHeight - scaledHeight) / 2;
         
-        gameWrapper.style.left = `${left}px`;
-        gameWrapper.style.top = `${top}px`;
+        activeElement.style.left = `${left}px`;
+        activeElement.style.top = `${top}px`;
     }
 
     // ======== INICIALIZACIÓN DEL JUEGO ========
@@ -675,8 +636,7 @@
         }
         
         initializeTouchControls(); 
-        scaleGame();
-        window.addEventListener('resize', scaleGame);
+        window.addEventListener('resize', scaleActiveElement);
         
         showScreen('start-screen');
         
@@ -716,7 +676,6 @@
             const inputName = document.getElementById('player-name-input').value; 
             playerName = inputName.trim() === '' ? 'Anónimo' : inputName; 
             showScreen('game-wrapper'); 
-            scaleGame();
             initializeGame(); 
         });
         
