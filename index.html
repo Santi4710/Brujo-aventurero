@@ -8,10 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        /* [CSS con nuevos estilos para UI compacta y RESPONSIVIDAD MÓVIL] */
-        body { background-color: #2c3e50; color: white; font-family: 'Press Start 2P', cursive; text-align: center; margin: 0; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; overflow: hidden; /* Evita scrollbars */ }
+        body { background-color: #2c3e50; color: white; font-family: 'Press Start 2P', cursive; text-align: center; margin: 0; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; overflow: hidden; }
         #app-container { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; }
-        .game-wrapper { display: none; flex-direction: column; align-items: center; }
+        .game-wrapper { display: none; flex-direction: column; align-items: center; position: absolute; }
         .game-wrapper h1 { font-size: 2em; color: #ecf0f1; text-shadow: 3px 3px 0px #95a5a6; }
         .game-wrapper p { font-size: 0.8em; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 5px; }
         .game-container { width: 1100px; height: 530px; border: 4px solid #2c3e50; box-shadow: 0 10px 20px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.3); background: linear-gradient(to bottom, #87CEEB 0%, #a2dff3 100%); position: relative; overflow: hidden; transform-origin: top left; }
@@ -32,6 +31,7 @@
         .diana { width: 50px; height: 50px; border: 3px solid white; border-radius: 50%; background: conic-gradient(red 0% 25%, white 25% 50%, red 50% 75%, white 75% 100%); position: absolute; z-index: 15; animation: spin-diana 1s linear infinite; } @keyframes spin-diana { to { transform: rotate(360deg); } }
         .laser-beam { position: absolute; width: 8px; height: 25px; background: linear-gradient(to bottom, #e74c3c, #f1c40f); border-radius: 4px; z-index: 14; box-shadow: 0 0 10px #e74c3c; }
 
+        /* Estilos de pantallas de menú */
         .screen { display: none; flex-direction: column; justify-content: center; align-items: center; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background: #2c3e50; z-index: 50; padding: 20px; box-sizing: border-box; }
         .screen h1 { font-size: 3em; color: #ecf0f1; text-shadow: 4px 4px 0px #95a5a6; margin-bottom: 50px; }
         .menu-container, .form-container { display: flex; flex-direction: column; align-items: center; gap: 20px; background: rgba(0,0,0,0.2); padding: 40px; border-radius: 10px; border: 2px solid rgba(255,255,255,0.3); }
@@ -43,9 +43,10 @@
         #question-options { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; max-width: 600px; }
         #question-options button { margin: 0; font-size: 0.8em; padding: 15px; width: auto; }
         #final-summary-container { display: none; }
-        #continue-question-container { display: none; flex-direction: column; align-items: center; gap: 15px; background: rgba(0, 0, 0, 0.5); padding: 25px; border-radius: 10px; border: 2px solid #fff; min-width: 600px; }
-        #continue-question-container p { font-size: 0.9em; max-width: 90%; }
+        #continue-question-container { display: none; flex-direction: column; align-items: center; gap: 15px; background: rgba(0, 0, 0, 0.5); padding: 25px; border-radius: 10px; border: 2px solid #fff; min-width: 600px; text-align: center; }
+        #continue-question-container p { font-size: 0.9em; max-width: 90%; padding: 0 20px; }
         #question-feedback { font-size: 1.2em; color: #f1c40f; height: 60px; display: flex; align-items: center; justify-content: center; }
+        
         #admin-panel-layout { display: flex; flex-direction: row; gap: 40px; width: 95%; max-width: 1200px; align-items: flex-start; }
         #admin-left-column { flex: 1; min-width: 450px; }
         #admin-right-column { flex: 1.5; background: rgba(0,0,0,0.15); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); max-height: 60vh; overflow-y: auto; }
@@ -69,6 +70,7 @@
         @keyframes mover-obstaculo { from { left: 1100px; } to { left: -150px; } } 
         @keyframes pulsar-escudo { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } 50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; } } @keyframes batir-ala-izq { from { transform: rotate(-30deg); } to { transform: rotate(10deg); } } @keyframes batir-ala-der { from { transform: rotate(30deg); } to { transform: rotate(-10deg); } } @keyframes dash-effect { from { transform: scale(1); opacity: 0.9; } to { transform: scale(2); opacity: 0; } } @keyframes flotar-ojo { 0% { transform: translateY(0); } 50% { transform: translateY(20px); } 100% { transform: translateY(0); } } @keyframes pupila-mira { from { left: 40%; } to { left: 60%; } }
 
+        /* NUEVOS ESTILOS PARA CONFIGURACIÓN Y PAUSA */
         .settings-grid { display: grid; grid-template-columns: 1fr; gap: 25px; width: 100%; max-width: 500px; }
         .settings-section { background: rgba(0,0,0,0.1); padding: 15px; border-radius: 8px; }
         .settings-section h3 { margin-top: 0; font-size: 1.2em; color: #f1c40f; }
@@ -80,21 +82,22 @@
         .control-change-btn { font-size: 0.7em; padding: 8px 12px; width: auto; }
         #pause-menu { display: flex; flex-direction: column; gap: 20px; }
 
+        /* ESTILOS PARA BLOQUEO DE ORIENTACIÓN Y CONTROLES TÁCTILES */
         #orientation-lock { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #2c3e50; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
         .rotate-icon { width: 80px; height: 120px; border: 5px solid white; border-radius: 15px; position: relative; margin-bottom: 30px; animation: rotate-anim 2s infinite ease-in-out; }
         @keyframes rotate-anim { 50% { transform: rotate(90deg); } }
         
-        #touch-controls { display: none; position: absolute; bottom: 0; left: 0; width: 100%; height: 150px; pointer-events: none; z-index: 100; }
-        .touch-btn { position: absolute; width: 70px; height: 70px; background: rgba(255, 255, 255, 0.3); border: 2px solid rgba(255, 255, 255, 0.7); border-radius: 50%; color: white; font-size: 2em; font-weight: bold; -webkit-user-select: none; user-select: none; pointer-events: auto; }
+        #touch-controls { display: none; position: absolute; bottom: 10px; left: 0; width: 100%; height: 100px; z-index: 100; }
+        .touch-btn { position: absolute; width: 80px; height: 80px; background: rgba(255, 255, 255, 0.3); border: 2px solid rgba(255, 255, 255, 0.7); border-radius: 50%; color: white; font-size: 2.5em; font-weight: bold; -webkit-user-select: none; user-select: none; }
         .touch-btn:active { background: rgba(255, 255, 255, 0.6); }
-        #touch-dpad { position: absolute; bottom: 20px; left: 20px; }
+        #touch-dpad { position: absolute; bottom: 0; left: 20px; }
         #touch-left { left: 0; }
-        #touch-right { left: 90px; }
-        #touch-actions { position: absolute; bottom: 20px; right: 20px; }
-        #touch-shoot { right: 90px; background-color: rgba(220, 50, 50, 0.4); }
+        #touch-right { left: 100px; }
+        #touch-actions { position: absolute; bottom: 0; right: 20px; }
+        #touch-shoot { right: 100px; background-color: rgba(220, 50, 50, 0.4); }
         #touch-jump { right: 0; background-color: rgba(50, 220, 50, 0.4); }
         
-        @media screen and (orientation: portrait) and (max-width: 800px) {
+        @media screen and (orientation: portrait) {
             #app-container { display: none; }
             #orientation-lock { display: flex; }
         }
@@ -116,8 +119,6 @@
         <div id="admin-screen" class="screen"><h1>Panel del Profesor</h1><div id="admin-panel-layout"><div id="admin-left-column"><div class="form-container"><form id="add-question-form"><label for="question-text">Texto de la Pregunta:</label><textarea id="question-text" required></textarea><label for="correct-answer-text">Respuesta Correcta:</label><input type="text" id="correct-answer-text" required><label for="incorrect-answer-1">Respuesta Incorrecta 1:</label><input type="text" id="incorrect-answer-1" required><label for="incorrect-answer-2">Respuesta Incorrecta 2:</label><input type="text" id="incorrect-answer-2" required><button type="submit" id="question-form-submit-btn" class="form-button btn-blue">Añadir Pregunta</button><button type="button" id="cancel-edit-btn" class="form-button btn-grey" style="display: none;">Cancelar Edición</button></form></div><div class="form-container" style="margin-top: 20px;"><h3>Ajustes de Partida</h3><label for="questions-to-use-input">Oportunidades para continuar (preguntas por partida):</label><input type="number" id="questions-to-use-input" min="1"><p style="font-size: 0.7em;">Total de preguntas disponibles: <strong id="question-count">0</strong></p></div></div><div id="admin-right-column"><h2>Lista de Preguntas</h2><div id="question-list-container"></div></div></div><button type="button" id="back-to-start-3" class="form-button btn-grey" style="width: auto; padding: 15px 30px; margin-top: 20px;">Volver al Menú Principal</button></div>
         
         <div class="game-wrapper" id="game-wrapper">
-            <h1>Aventura del Brujo</h1>
-            <p>Usa los controles configurados para jugar. <strong>P</strong> para Pausa.</p>
             <div class="game-container" id="game-container">
                 <div id="level-up-display"></div>
                 <div id="montana1" class="montana"></div><div id="montana2" class="montana"></div><div id="montana3" class="montana"></div>
@@ -167,7 +168,7 @@
     };
     let isRebinding = null;
 
-    // ======== GENERADOR DE SONIDOS (sin cambios) ========
+    // ======== GENERADOR DE SONIDOS ========
     let audioContext; function bufferToWave(abuffer, len) { let numOfChan = abuffer.numberOfChannels, length = len * numOfChan * 2 + 44, buffer = new ArrayBuffer(length), view = new DataView(buffer), channels = [], i, sample, offset = 0, pos = 0; setUint32(0x46464952); setUint32(length - 8); setUint32(0x45564157); setUint32(0x20746d66); setUint32(16); setUint16(1); setUint16(numOfChan); setUint32(abuffer.sampleRate); setUint32(abuffer.sampleRate * 2 * numOfChan); setUint16(numOfChan * 2); setUint16(16); setUint32(0x61746164); setUint32(length - pos - 4); for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i)); while (pos < length) { for (i = 0; i < numOfChan; i++) { sample = Math.max(-1, Math.min(1, channels[i][offset])); sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767) | 0; view.setInt16(pos, sample, true); pos += 2; } offset++; } let binary = ''; const bytes = new Uint8Array(buffer); const byteLength = bytes.byteLength; for (let i = 0; i < byteLength; i++) { binary += String.fromCharCode(bytes[i]); } return "data:audio/wav;base64," + btoa(binary); function setUint16(data) { view.setUint16(pos, data, true); pos += 2; } function setUint32(data) { view.setUint32(pos, data, true); pos += 4; } }
     async function createSoundDataURI(config) { if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); const duration = config.duration || 0.1; const offlineCtx = new OfflineAudioContext(1, 44100 * duration, 44100); const gainNode = offlineCtx.createGain(); gainNode.connect(offlineCtx.destination); gainNode.gain.setValueAtTime(config.vol || 0.2, offlineCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.0001, offlineCtx.currentTime + duration); if (config.type === 'noise') { const bufferSize = offlineCtx.sampleRate * duration; const buffer = offlineCtx.createBuffer(1, bufferSize, offlineCtx.sampleRate); const data = buffer.getChannelData(0); for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; } const noise = offlineCtx.createBufferSource(); noise.buffer = buffer; noise.connect(gainNode); noise.start(0); } else { const oscillator = offlineCtx.createOscillator(); oscillator.connect(gainNode); oscillator.type = config.type || 'sine'; if (config.freq) { oscillator.frequency.setValueAtTime(config.freq, offlineCtx.currentTime); } if (config.freqEnd) { oscillator.frequency.exponentialRampToValueAtTime(config.freqEnd, offlineCtx.currentTime + duration * 0.9); } oscillator.start(0); } const renderedBuffer = await offlineCtx.startRendering(); return bufferToWave(renderedBuffer, renderedBuffer.length); }
     
@@ -254,7 +255,6 @@
     });
     document.addEventListener('keyup', (e) => { keys[e.code] = false; if (e.code === controls.shoot.key) { if(isChargingShot) disparar(); isChargingShot = false; personaje.classList.remove('charging'); } });
     
-    // CORRECCIÓN FINAL: gameTime++ está en su sitio.
     function gameLoop() {
         if (isGameOver) return;
         if (!isPaused) {
@@ -461,8 +461,8 @@
 
     // ======== FUNCIÓN DE ESCALADO RESPONSIVE ========
     function scaleGame() {
-        const game = document.querySelector('.game-container');
-        if (!game) return;
+        const gameWrapper = document.querySelector('.game-wrapper');
+        if (!gameWrapper) return;
 
         const gameWidth = 1100;
         const gameHeight = 530;
@@ -475,9 +475,9 @@
 
         const scale = Math.min(scaleX, scaleY);
 
-        game.style.transform = `scale(${scale})`;
-        game.style.left = `${(viewportWidth - gameWidth * scale) / 2}px`;
-        game.style.top = `${(viewportHeight - gameHeight * scale) / 2}px`;
+        gameWrapper.style.transform = `scale(${scale})`;
+        gameWrapper.style.left = `${(viewportWidth - gameWidth * scale) / 2}px`;
+        gameWrapper.style.top = `${(viewportHeight - gameHeight * scale) / 2}px`;
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -489,9 +489,9 @@
         }
         
         initializeTouchControls(); 
-        scaleGame(); // Escalar al cargar
-        window.addEventListener('resize', scaleGame); // Escalar al cambiar tamaño/orientación
-
+        scaleGame();
+        window.addEventListener('resize', scaleGame);
+        
         showScreen('start-screen');
         
         const musicSlider = document.getElementById('music-volume'); const musicLabel = document.getElementById('music-volume-label');
@@ -509,17 +509,7 @@
             }
         });
         
-        document.getElementById('play-btn').addEventListener('click', () => { 
-            if (!isAudioInitialized) { 
-                if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); 
-                audioContext.resume(); 
-                sounds.menuMusic.play().catch(e => {}); 
-                isAudioInitialized = true; 
-            } 
-            enterFullScreen(); 
-            showScreen('player-name-screen'); 
-        });
-        
+        document.getElementById('play-btn').addEventListener('click', () => { if (!isAudioInitialized) { if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)(); audioContext.resume(); sounds.menuMusic.play().catch(e => {}); isAudioInitialized = true; } enterFullScreen(); showScreen('player-name-screen'); });
         document.getElementById('settings-btn').addEventListener('click', () => showScreen('settings-screen'));
         document.getElementById('admin-btn').addEventListener('click', () => showScreen('admin-screen'));
         document.getElementById('back-to-start-1').addEventListener('click', () => showScreen('start-screen'));
